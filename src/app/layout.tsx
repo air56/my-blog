@@ -10,6 +10,10 @@ export const metadata: Metadata = {
     template: '%s | My Blog',
   },
   description: '个人随笔博客',
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
 };
 
 export default function RootLayout({
