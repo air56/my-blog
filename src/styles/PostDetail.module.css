@@ -1,8 +1,10 @@
 /* src/styles/PostDetail.module.css */
 .container {
   max-width: 720px;
-  margin: 0 auto;
-  padding: var(--space-2xl) var(--space-lg) var(--space-3xl);
+  margin: 0;
+  padding: var(--space-2xl) 0 var(--space-3xl);
+  flex: 1;
+  min-width: 0;
 }
 
 .header {
@@ -187,6 +189,14 @@
 
 .backLink:hover {
   color: var(--accent-yellow);
+}
+
+.pageLayout {
+  display: flex;
+  max-width: calc(720px + 60px + var(--space-xl));
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
+  gap: var(--space-lg);
 }
 
 .notFound {
