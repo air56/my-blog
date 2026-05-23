@@ -19,24 +19,25 @@ export default function TransitionProvider({ children }: { children: React.React
     const t2 = setTimeout(() => setProgress(55), 150);
     const t3 = setTimeout(() => setProgress(75), 300);
     const t4 = setTimeout(() => setProgress(88), 450);
+    let t6: ReturnType<typeof setTimeout>;
     const t5 = setTimeout(() => {
       setProgress(100);
-      setTimeout(() => {
+      setLoading(false);
+      t6 = setTimeout(() => {
         setVisible(false);
-        setLoading(false);
-      }, 350);
+      }, 380);
     }, 650);
 
     return () => {
       clearTimeout(t1); clearTimeout(t2); clearTimeout(t3);
-      clearTimeout(t4); clearTimeout(t5);
+      clearTimeout(t4); clearTimeout(t5); clearTimeout(t6);
     };
   }, [pathname]);
 
   return (
     <>
       {visible && (
-        <div className={`${styles.overlay} ${!loading ? styles.fadeOut : ''}`}
+        <div aria-hidden="true" className={`${styles.overlay} ${!loading ? styles.fadeOut : ''}`}
              style={{ pointerEvents: loading ? 'auto' : 'none' }}>
           <div className={styles.barTrack}>
             <div className={styles.bar} style={{ transform: `scaleX(${progress / 100})` }} />

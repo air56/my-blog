@@ -28,3 +28,12 @@
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: 1px;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay {
+    transition: none;
+  }
+  .bar {
+    transition: none;
+  }
+}
