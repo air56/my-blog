@@ -37,7 +37,7 @@
 .decorBlock2 {
   width: 8px;
   height: 24px;
-  background: var(--accent-green);
+  background-color: var(--accent-green);
   opacity: 0.4;
   border-radius: 1px;
   background-image: repeating-linear-gradient(

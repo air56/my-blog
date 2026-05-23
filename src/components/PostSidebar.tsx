@@ -13,12 +13,19 @@ export default function PostSidebar({ content }: { content: string }) {
     // Extract h2 headings from raw markdown
     const h2Regex = /^## (.+)$/gm;
     const extracted: Heading[] = [];
+    const usedIds = new Map<string, number>();
     let match: RegExpExecArray | null;
     while ((match = h2Regex.exec(content)) !== null) {
-      const id = match[1]
+      let id = match[1]
         .toLowerCase()
         .replace(/\s+/g, '-')
         .replace(/[^\w一-鿿-]/g, '');
+      // Deduplicate heading IDs
+      const count = usedIds.get(id) || 0;
+      if (count > 0) {
+        id = `${id}-${count}`;
+      }
+      usedIds.set(id, count + 1);
       extracted.push({ id, text: match[1] });
     }
     setHeadings(extracted);
@@ -36,13 +43,17 @@ export default function PostSidebar({ content }: { content: string }) {
       { rootMargin: '-80px 0px -60% 0px', threshold: 0.1 }
     );
 
-    // Delay to wait for DOM rendering
-    const timer = setTimeout(() => {
-      for (const { id } of extracted) {
-        const el = document.getElementById(id);
-        if (el) observer.observe(el);
+    // Wait for DOM rendering with retry via requestAnimationFrame
+    const tryObserve = () => {
+      const allFound = extracted.every(({ id }) => document.getElementById(id));
+      if (allFound) {
+        for (const { id } of extracted) {
+          const el = document.getElementById(id);
+          if (el) observer.observe(el);
+        }
       }
-    }, 100);
+    };
+    const timer = setTimeout(tryObserve, 100);
 
     return () => {
       clearTimeout(timer);
