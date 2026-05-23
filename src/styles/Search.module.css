@@ -1,0 +1,128 @@
+/* src/styles/Search.module.css */
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--space-2xl) var(--space-lg) var(--space-3xl);
+}
+
+.header {
+  margin-bottom: var(--space-2xl);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  margin-bottom: var(--space-sm);
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin-bottom: var(--space-lg);
+}
+
+.divider {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--accent-pink) 0,
+    var(--accent-pink) 1.5rem,
+    var(--accent-green) 1.5rem,
+    var(--accent-green) 3rem,
+    var(--accent-yellow) 3rem,
+    transparent 7rem
+  );
+}
+
+.inputWrapper {
+  position: relative;
+  margin-bottom: var(--space-2xl);
+}
+
+.input {
+  width: 100%;
+  padding: var(--space-md) var(--space-lg);
+  padding-left: var(--space-2xl);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-family: var(--font-sans);
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.input:focus {
+  border-color: var(--accent-yellow);
+}
+
+.input::placeholder {
+  color: var(--text-muted);
+}
+
+.inputIcon {
+  position: absolute;
+  left: var(--space-md);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  pointer-events: none;
+}
+
+.resultCount {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-bottom: var(--space-lg);
+}
+
+.resultItem {
+  display: block;
+  padding: var(--space-lg);
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  margin-bottom: var(--space-md);
+  transition: all var(--transition-normal);
+}
+
+.resultItem:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--accent-yellow);
+}
+
+.resultTitle {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: var(--space-xs);
+  transition: color var(--transition-fast);
+}
+
+.resultItem:hover .resultTitle {
+  color: var(--accent-yellow);
+}
+
+.resultMeta {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.resultDescription {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  margin-top: var(--space-sm);
+}
+
+.empty {
+  text-align: center;
+  padding: var(--space-3xl) 0;
+  color: var(--text-muted);
+}
+
+.highlight {
+  background: rgba(255, 250, 0, 0.15);
+  color: var(--accent-yellow);
+  padding: 0 2px;
+}
