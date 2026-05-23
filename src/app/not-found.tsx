@@ -13,6 +13,21 @@ export default function NotFound() {
         padding: '2rem',
       }}
     >
+      <style>{`
+        .not-found-btn {
+          display: inline-block;
+          padding: 0.75rem 2rem;
+          border: 1px solid var(--accent-yellow);
+          color: var(--accent-yellow);
+          font-size: 0.875rem;
+          letter-spacing: 0.05em;
+          transition: all 0.3s ease;
+        }
+        .not-found-btn:hover {
+          background: var(--accent-yellow) !important;
+          color: #000 !important;
+        }
+      `}</style>
       <div
         style={{
           fontSize: '5rem',
@@ -32,26 +47,7 @@ export default function NotFound() {
       <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: '1rem' }}>
         页面未找到
       </p>
-      <Link
-        href="/"
-        style={{
-          display: 'inline-block',
-          padding: '0.75rem 2rem',
-          border: '1px solid var(--accent-yellow)',
-          color: 'var(--accent-yellow)',
-          fontSize: '0.875rem',
-          letterSpacing: '0.05em',
-          transition: 'all 0.3s ease',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = 'var(--accent-yellow)';
-          e.currentTarget.style.color = '#000';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = 'transparent';
-          e.currentTarget.style.color = 'var(--accent-yellow)';
-        }}
-      >
+      <Link href="/" className="not-found-btn">
         返回首页
       </Link>
     </div>
