@@ -1,0 +1,96 @@
+.sidebar {
+  position: sticky;
+  top: calc(var(--header-height) + var(--space-xl));
+  width: 60px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+  padding-top: var(--space-lg);
+  height: fit-content;
+  min-height: 200px;
+}
+
+/* Yellow vertical line */
+.decorLine {
+  width: 1px;
+  flex: 1;
+  min-height: 80px;
+  background: linear-gradient(
+    180deg,
+    var(--accent-yellow) 0%,
+    rgba(255, 250, 0, 0.2) 60%,
+    transparent 100%
+  );
+}
+
+/* Decorative blocks - Endfield style */
+.decorBlock1 {
+  width: 12px;
+  height: 12px;
+  background: var(--accent-yellow);
+  opacity: 0.6;
+  transform: rotate(45deg);
+}
+
+.decorBlock2 {
+  width: 8px;
+  height: 24px;
+  background: var(--accent-green);
+  opacity: 0.4;
+  border-radius: 1px;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 1px,
+    rgba(0, 0, 0, 0.3) 1px,
+    rgba(0, 0, 0, 0.3) 2px
+  );
+}
+
+.decorBlock3 {
+  width: 16px;
+  height: 4px;
+  background: var(--accent-pink);
+  opacity: 0.3;
+}
+
+/* Quick navigation */
+.nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+  writing-mode: vertical-rl;
+}
+
+.navTitle {
+  font-size: 0.625rem;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  margin-bottom: var(--space-xs);
+}
+
+.navItem {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  letter-spacing: 0.05em;
+  padding: 2px 0;
+  transition: color var(--transition-fast);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+.navItem:hover {
+  color: var(--accent-yellow);
+}
+
+.navItemActive {
+  color: var(--accent-yellow);
+}
