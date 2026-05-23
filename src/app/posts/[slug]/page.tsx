@@ -48,7 +48,13 @@ export default async function PostPage({ params }: Props) {
         className={styles.content}
         dangerouslySetInnerHTML={{ __html: post.content
           .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-          .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+          .replace(/^## (.+)$/gm, (_, title: string) => {
+            const id = title
+              .toLowerCase()
+              .replace(/\s+/g, '-')
+              .replace(/[^\w一-鿿-]/g, '');
+            return `<h2 id="${id}">${title}</h2>`;
+          })
           .replace(/^# (.+)$/gm, '<h1>$1</h1>')
           .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
           .replace(/\*(.+?)\*/g, '<em>$1</em>')
