@@ -22,10 +22,10 @@ export default function PostSidebar({ content }: { content: string }) {
         .replace(/[^\w一-鿿-]/g, '');
       // Deduplicate heading IDs
       const count = usedIds.get(id) || 0;
+      usedIds.set(id, count + 1);
       if (count > 0) {
         id = `${id}-${count}`;
       }
-      usedIds.set(id, count + 1);
       extracted.push({ id, text: match[1] });
     }
     setHeadings(extracted);
@@ -43,14 +43,24 @@ export default function PostSidebar({ content }: { content: string }) {
       { rootMargin: '-80px 0px -60% 0px', threshold: 0.1 }
     );
 
-    // Wait for DOM rendering with retry via requestAnimationFrame
-    const tryObserve = () => {
+    // Wait for DOM rendering with retry
+    const observeHeadings = () => {
       const allFound = extracted.every(({ id }) => document.getElementById(id));
       if (allFound) {
         for (const { id } of extracted) {
           const el = document.getElementById(id);
           if (el) observer.observe(el);
         }
+        return true;
+      }
+      return false;
+    };
+    // Initial attempt after hydration
+    let retries = 0;
+    const tryObserve = () => {
+      if (!observeHeadings() && retries < 3) {
+        retries++;
+        requestAnimationFrame(tryObserve);
       }
     };
     const timer = setTimeout(tryObserve, 100);

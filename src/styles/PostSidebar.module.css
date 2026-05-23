@@ -29,7 +29,7 @@
 .decorBlock1 {
   width: 12px;
   height: 12px;
-  background: var(--accent-yellow);
+  background-color: var(--accent-yellow);
   opacity: 0.6;
   transform: rotate(45deg);
 }
@@ -52,7 +52,7 @@
 .decorBlock3 {
   width: 16px;
   height: 4px;
-  background: var(--accent-pink);
+  background-color: var(--accent-pink);
   opacity: 0.3;
 }
 
