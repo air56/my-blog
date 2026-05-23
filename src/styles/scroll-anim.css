@@ -21,30 +21,30 @@
 .anim-fade-in:nth-child(9) { transition-delay: 0.4s; }
 
 /* Content children animation (used for post detail) */
-.contentAnim > * {
+[data-anim-content] > * {
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-.contentAnim > *.anim-visible {
+[data-anim-content] > *.anim-visible {
   opacity: 1;
   transform: translateY(0);
 }
 
 /* Staggered delay for content children */
-.contentAnim > *:nth-child(2) { transition-delay: 0.05s; }
-.contentAnim > *:nth-child(3) { transition-delay: 0.1s; }
-.contentAnim > *:nth-child(4) { transition-delay: 0.15s; }
-.contentAnim > *:nth-child(5) { transition-delay: 0.2s; }
-.contentAnim > *:nth-child(6) { transition-delay: 0.25s; }
-.contentAnim > *:nth-child(7) { transition-delay: 0.3s; }
-.contentAnim > *:nth-child(8) { transition-delay: 0.35s; }
-.contentAnim > *:nth-child(9) { transition-delay: 0.4s; }
+[data-anim-content] > *:nth-child(2) { transition-delay: 0.05s; }
+[data-anim-content] > *:nth-child(3) { transition-delay: 0.1s; }
+[data-anim-content] > *:nth-child(4) { transition-delay: 0.15s; }
+[data-anim-content] > *:nth-child(5) { transition-delay: 0.2s; }
+[data-anim-content] > *:nth-child(6) { transition-delay: 0.25s; }
+[data-anim-content] > *:nth-child(7) { transition-delay: 0.3s; }
+[data-anim-content] > *:nth-child(8) { transition-delay: 0.35s; }
+[data-anim-content] > *:nth-child(9) { transition-delay: 0.4s; }
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .contentAnim > *,
+  [data-anim-content] > *,
   .anim-fade-in {
     opacity: 1;
     transform: none;

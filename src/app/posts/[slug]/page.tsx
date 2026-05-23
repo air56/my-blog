@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getPostBySlug, getPostSlugs } from '@/lib/posts';
 import PostSidebar from '@/components/PostSidebar';
+import ScrollAnimProvider from '@/components/ScrollAnimProvider';
 import styles from '@/styles/PostDetail.module.css';
 import type { Metadata } from 'next';
 
@@ -47,9 +48,11 @@ export default async function PostPage({ params }: Props) {
           <div className={styles.divider} />
         </div>
 
-        <div
-          className={styles.content}
-          dangerouslySetInnerHTML={{ __html: post.content
+        <ScrollAnimProvider selector="[data-anim-content] > *">
+          <div
+            className={styles.content}
+            data-anim-content
+            dangerouslySetInnerHTML={{ __html: post.content
             .replace(/^### (.+)$/gm, '<h3>$1</h3>')
             .replace(/^## (.+)$/gm, (_, title: string) => {
               const id = title
@@ -72,7 +75,7 @@ export default async function PostPage({ params }: Props) {
             .replace(/^(?!<[hupbld\/])/gm, '<p>')
             .replace(/<p>\s*<\/p>/g, '')
           }}
-        />
+        /></ScrollAnimProvider>
 
         <div className={styles.tags}>
           {post.tags.map((tag) => (
