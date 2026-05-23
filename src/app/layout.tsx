@@ -11,8 +11,8 @@ export const metadata: Metadata = {
   },
   description: '个人随笔博客',
   icons: {
-    icon: '/favicon.ico',
-    apple: '/apple-touch-icon.png',
+    icon: '/my-blog/favicon.ico',
+    apple: '/my-blog/apple-touch-icon.png',
   },
 };
 
