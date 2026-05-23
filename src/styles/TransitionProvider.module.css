@@ -1,0 +1,30 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.35s ease;
+}
+
+.fadeOut {
+  opacity: 0;
+}
+
+.barTrack {
+  width: 240px;
+  height: 2px;
+  background: rgba(255, 250, 0, 0.15);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  background: var(--accent-yellow);
+  transform-origin: left;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 1px;
+}
