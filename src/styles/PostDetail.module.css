@@ -193,7 +193,7 @@
 
 .pageLayout {
   display: flex;
-  max-width: calc(720px + 60px + var(--space-xl));
+  max-width: calc(720px + 180px + var(--space-xl));
   margin: 0 auto;
   padding: 0 var(--space-lg);
   gap: var(--space-lg);
