@@ -18,14 +18,20 @@ export default function Header() {
   const [readProgress, setReadProgress] = useState(0);
 
   useEffect(() => {
+    let ticking = false;
     const onScroll = () => {
-      const scrollY = window.scrollY;
-      setScrolled(scrollY > 80);
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          setScrolled(scrollY > 80);
 
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      if (docHeight > 0) {
-        const progress = Math.min(scrollY / docHeight, 1);
-        setReadProgress(progress);
+          const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+          if (docHeight > 0) {
+            setReadProgress(Math.min(scrollY / docHeight, 1));
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
