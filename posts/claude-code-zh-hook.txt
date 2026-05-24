@@ -4,10 +4,10 @@
 7:I[9295,["972","static/chunks/972-c020e7f518b751dc.js","185","static/chunks/app/layout-b446f48b298f845b.js"],"default"]
 8:I[2972,["972","static/chunks/972-c020e7f518b751dc.js","333","static/chunks/app/posts/%5Bslug%5D/page-b7eac95911a72109.js"],""]
 4:["slug","claude-code-zh-hook","d"]
-0:["NNztwDFdLTkx_VvnLLVmX",[[["",{"children":["posts",{"children":[["slug","claude-code-zh-hook","d"],{"children":["__PAGE__?{\"slug\":\"claude-code-zh-hook\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["posts",{"children":[["slug","claude-code-zh-hook","d"],{"children":["__PAGE__",{},[["$L1","$L2",[["$","link","0",{"rel":"stylesheet","href":"/my-blog/_next/static/css/a8b01859ab43d11f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children","posts","children","$4","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children","posts","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/my-blog/_next/static/css/ca166833eeb77d96.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"zh-CN","children":["$","body",null,{"children":["$","$L6",null,{"children":[["$","$L7",null,{}],["$","main",null,{"style":{"minHeight":"calc(100vh - var(--header-height))","paddingTop":"var(--header-height)"},"children":["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":["$","div",null,{"style":{"display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center","minHeight":"60vh","textAlign":"center","padding":"2rem"},"children":[["$","style",null,{"children":"\n        .not-found-btn {\n          display: inline-block;\n          padding: 0.75rem 2rem;\n          border: 1px solid var(--accent-yellow);\n          color: var(--accent-yellow);\n          font-size: 0.875rem;\n          letter-spacing: 0.05em;\n          transition: all 0.3s ease;\n        }\n        .not-found-btn:hover {\n          background: var(--accent-yellow) !important;\n          color: #000 !important;\n        }\n      "}],["$","div",null,{"style":{"fontSize":"5rem","fontWeight":700,"fontFamily":"var(--font-display)","color":"var(--accent-yellow)","lineHeight":1,"marginBottom":"1rem"},"children":"404"}],["$","div",null,{"className":"section-divider","style":{"maxWidth":"200px","margin":"0 auto 1.5rem"}}],["$","p",null,{"style":{"color":"var(--text-secondary)","marginBottom":"2rem","fontSize":"1rem"},"children":"页面未找到"}],["$","$L8",null,{"href":"/","className":"not-found-btn","children":"返回首页"}]]}],"notFoundStyles":[]}]}],["$","footer",null,{"className":"Footer_footer__JrJN9","children":["$","div",null,{"className":"Footer_inner__QTh9n","children":[["$","span",null,{"className":"Footer_copy__fxI_X","children":["© ",2026," My Blog. All rights reserved."]}],["$","div",null,{"className":"Footer_links__g0H7R","children":["$","a",null,{"href":"https://github.com","target":"_blank","rel":"noopener noreferrer","className":"Footer_link__ZIL7i","children":"GitHub"}]}]]}]}]]}]}]}]],null],null],["$L9",null]]]]
+0:["zTV50LG0Z-AXyeroD9H-r",[[["",{"children":["posts",{"children":[["slug","claude-code-zh-hook","d"],{"children":["__PAGE__?{\"slug\":\"claude-code-zh-hook\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["posts",{"children":[["slug","claude-code-zh-hook","d"],{"children":["__PAGE__",{},[["$L1","$L2",[["$","link","0",{"rel":"stylesheet","href":"/my-blog/_next/static/css/a8b01859ab43d11f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children","posts","children","$4","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children","posts","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/my-blog/_next/static/css/ca166833eeb77d96.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"zh-CN","children":["$","body",null,{"children":["$","$L6",null,{"children":[["$","$L7",null,{}],["$","main",null,{"style":{"minHeight":"calc(100vh - var(--header-height))","paddingTop":"var(--header-height)"},"children":["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":["$","div",null,{"style":{"display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center","minHeight":"60vh","textAlign":"center","padding":"2rem"},"children":[["$","style",null,{"children":"\n        .not-found-btn {\n          display: inline-block;\n          padding: 0.75rem 2rem;\n          border: 1px solid var(--accent-yellow);\n          color: var(--accent-yellow);\n          font-size: 0.875rem;\n          letter-spacing: 0.05em;\n          transition: all 0.3s ease;\n        }\n        .not-found-btn:hover {\n          background: var(--accent-yellow) !important;\n          color: #000 !important;\n        }\n      "}],["$","div",null,{"style":{"fontSize":"5rem","fontWeight":700,"fontFamily":"var(--font-display)","color":"var(--accent-yellow)","lineHeight":1,"marginBottom":"1rem"},"children":"404"}],["$","div",null,{"className":"section-divider","style":{"maxWidth":"200px","margin":"0 auto 1.5rem"}}],["$","p",null,{"style":{"color":"var(--text-secondary)","marginBottom":"2rem","fontSize":"1rem"},"children":"页面未找到"}],["$","$L8",null,{"href":"/","className":"not-found-btn","children":"返回首页"}]]}],"notFoundStyles":[]}]}],["$","footer",null,{"className":"Footer_footer__JrJN9","children":["$","div",null,{"className":"Footer_inner__QTh9n","children":[["$","span",null,{"className":"Footer_copy__fxI_X","children":["© ",2026," My Blog. All rights reserved."]}],["$","div",null,{"className":"Footer_links__g0H7R","children":["$","a",null,{"href":"https://github.com","target":"_blank","rel":"noopener noreferrer","className":"Footer_link__ZIL7i","children":"GitHub"}]}]]}]}]]}]}]}]],null],null],["$L9",null]]]]
 a:I[568,["972","static/chunks/972-c020e7f518b751dc.js","333","static/chunks/app/posts/%5Bslug%5D/page-b7eac95911a72109.js"],"default"]
 c:I[1321,["972","static/chunks/972-c020e7f518b751dc.js","333","static/chunks/app/posts/%5Bslug%5D/page-b7eac95911a72109.js"],"default"]
-b:Tf57,
+b:T1a8a,
 ## 痛点
 
 Claude Code 每次要写文件、改代码或执行命令时，弹出一个英文的 `Allow this tool call? [yes/no]`。批还是不批？得仔细看参数才明白它要做什么。我想要的是：每次审批时自动附带一份**结构化的中文变更摘要**。
@@ -88,7 +88,78 @@ Hook 机制本质是事件驱动的脚本执行。在 settings.json 中注册回
 技能上线后，每次使用都在发现问题：触发描述不够精准、SKILL.md 配置模板有歧义、卸载步骤不够清晰……每次遇到就改一点。刚才又让 Claude 帮忙完善了 SKILL.md 的结构，把安装步骤拆得更细，加了故障排除章节。
 
 从最初一段 JSON 配置，到有脚本、有文档、有评估的完整技能包——工具的成长和代码一样，都是迭代出来的。
-d:T126a,<p>
+
+---
+
+## 调试：Hook 为什么还是不触发
+
+装好之后用了几天，发现不对劲——明明配置好了，为什么从来没看到过中文摘要？让 Claude 检查了四五轮，每次都回复"没问题啊，应该能跑"，但实际就是不生效。
+
+### 线索一：debug 日志
+
+加了一行 debug log 把 stdin 原样写到文件：
+
+```js
+const LOG = '~/.claude/hooks/preapproval.log';
+function debug(...args) {
+  fs.appendFileSync(LOG, new Date().toISOString() + ' ' + args.join(' ') + '\n');
+}
+```
+
+日志显示 hook **确实在跑**，每次工具调用都有记录。说明 hook 注册和触发机制都没问题，问题出在脚本内部。
+
+### 定位：JSON 字段名不匹配
+
+对比日志中的原始 JSON 和脚本解析逻辑，发现根本原因：
+
+Claude Code 实际传的 JSON 结构是：
+
+```json
+{
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Bash",
+  "tool_input": { "command": "ls ..." }
+}
+```
+
+而脚本最初写的解析逻辑是：
+
+```js
+const toolCall = input.tool_call || {};           // → undefined → {}
+const tool = (toolCall.tool || input.tool);       // → undefined → 'unknown'
+const args = (toolCall.arguments || input.arguments); // → undefined → {}
+```
+
+脚本在找 `tool_call.tool`，实际字段是 `tool_name`——两者从来没有对上过。结果所有工具都被识别为 `unknown`，参数永远为空对象，摘要退化成一串无意义的泛用文本。之前几次迭代都意识到了"可能需要兼容不同格式"，加了 fallback，但 fallback 优先级排错了——`input.tool` 又不存在，始终落到兜底值。
+
+### 根源二：权限预授权吞掉了弹窗
+
+即便脚本修好了，还有一个问题：我的 `settings.json` 里配了大量预授权规则（`Bash(git *)`、`Bash(npm *)` 等）。`PreToolUse` hook 返回 `decision: 'ask'` 时，中文摘要是附加在审批弹窗旁边的——但如果操作已被预授权，弹窗根本不会出现，摘要也无处可显示。
+
+### 解决
+
+两步修好：
+
+1. **脚本改正字段名**：`input.tool_name` 优先于 `input.tool_call.tool`，`input.tool_input` 优先于 `input.tool_call.arguments`
+2. **改用 PostToolUse**：把 hook 事件从 `PreToolUse` 换成 `PostToolUse`，每次工具调用**之后**输出纯文本摘要，不再依赖审批弹窗
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|Bash|Glob|Grep|Read|WebFetch|WebSearch",
+        "hooks": [{ "type": "command", "command": "node ..." }]
+      }
+    ]
+  }
+}
+```
+
+### 教训
+
+Hook 调试看不见 stdout，只有一个 yes/no 弹窗，出问题时完全黑盒。这次能定位全靠 debug log 把原始输入写盘——没有这行日志，光靠肉眼永远猜不到字段名对不上。给后续写 hook 的自己的建议：**debug log 先加上，不要等发现问题了再补**。
+d:T1fd7,<p>
 <h2 id="痛点">痛点</h2></p><p>Claude Code 每次要写文件、改代码或执行命令时，弹出一个英文的 <code>Allow this tool call? [yes/no]</code>。批还是不批？得仔细看参数才明白它要做什么。我想要的是：每次审批时自动附带一份<strong>结构化的中文变更摘要</strong>。
 <p>
 <h2 id="寻找现成方案">寻找现成方案</h2></p><p>搜索了一圈：<strong>ai-report-to-me</strong> 能生成中文日报，但不能用在实时审批场景。Claude Code 的 <strong>Hooks 系统</strong>提供了 <code>PreToolUse</code> 事件，理论上可以实现，但没有现成的插件。
@@ -128,7 +199,7 @@ d:T126a,<p>
 <ul><li><strong>Write</strong> — 新增 diff 对比：写入前自动生成差异预览，大文件自动截断</li>
 <li><strong>Bash</strong> — 新增命令风险评估：</code>rm -rf /<code> 标红，</code>git push<code> 标黄，</code>ls<code> 标绿</li>
 <li><strong>Glob / Grep / WebFetch / WebSearch</strong> — 新增搜索类工具的中文摘要，之前审批时只看到工具名</li>
-<li><strong>双模式支持</strong> — 兼容 </code>PreToolUse<code>（返回 JSON 决策）和 </code>PermissionRequest`（文本附在弹窗旁）</li>
+<li><strong>双模式支持</strong> — 兼容 </code>PreToolUse<code>（返回 JSON 决策）和 </code>PermissionRequest<code>（文本附在弹窗旁）</li>
 </ul>
 <h3>评估闭环</h3></p><p>技能光能跑不够，还得验证 AI 能不能正确安装它。写了三个 eval 场景：
 <p>
@@ -137,6 +208,49 @@ d:T126a,<p>
 <li><strong>卸载</strong> — "不需要了，帮我把 hook 卸载掉"，验证能否干净清理</li></p><p>有技能指导时正确率 ~90%，没有技能裸写时 ~40%。差距主要在配置格式和路径引用——AI 靠记忆写出来的经常跟 Claude Code 实际要求的格式不一致。
 <p>
 <h3>持续打磨</h3></p><p>技能上线后，每次使用都在发现问题：触发描述不够精准、SKILL.md 配置模板有歧义、卸载步骤不够清晰……每次遇到就改一点。刚才又让 Claude 帮忙完善了 SKILL.md 的结构，把安装步骤拆得更细，加了故障排除章节。</p><p>从最初一段 JSON 配置，到有脚本、有文档、有评估的完整技能包——工具的成长和代码一样，都是迭代出来的。
-<p>2:["$","div",null,{"className":"PostDetail_pageLayout__5uM1J","children":[["$","$La",null,{"content":"$b"}],["$","article",null,{"className":"PostDetail_container__Z8_ZL","children":[["$","$L8",null,{"href":"/","className":"PostDetail_backLink___eazR","children":"← 返回首页"}],["$","div",null,{"className":"PostDetail_header__C2cUQ","children":[["$","div",null,{"className":"PostDetail_meta__2qpY2","children":[["$","time",null,{"className":"PostDetail_date__jgVbX","children":"2026-05-24"}],["$","$L8",null,{"href":"/categories/%E6%8A%80%E6%9C%AF","className":"PostDetail_category__Npi0s","children":"技术"}]]}],["$","h1",null,{"className":"PostDetail_title__qQKeB","children":"给 Claude Code 装上中文审批摘要 Hook"}],["$","div",null,{"className":"PostDetail_divider__mbBrX"}]]}],["$","$Lc",null,{"selector":"[data-anim-content] > *","children":["$","div",null,{"className":"PostDetail_content__qxOt7","data-anim-content":true,"dangerouslySetInnerHTML":{"__html":"$d"}}]}],["$","div",null,{"className":"PostDetail_tags__rxApn","children":[["$","span","Claude Code",{"className":"PostDetail_tag__8k22N","children":["#","Claude Code"]}],["$","span","AI",{"className":"PostDetail_tag__8k22N","children":["#","AI"]}],["$","span","Hook",{"className":"PostDetail_tag__8k22N","children":["#","Hook"]}],["$","span","Node.js",{"className":"PostDetail_tag__8k22N","children":["#","Node.js"]}]]}]]}]]}]
-9:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"给 Claude Code 装上中文审批摘要 Hook | My Blog"}],["$","meta","3",{"name":"description","content":"写一个 PreToolUse Hook，让 Claude Code 每次请求审批时自动显示中文变更摘要。"}],["$","link","4",{"rel":"icon","href":"/my-blog/favicon.ico"}],["$","link","5",{"rel":"apple-touch-icon","href":"/my-blog/apple-touch-icon.png"}]]
+<p>
+<hr>
+<p>
+<h2 id="调试hook-为什么还是不触发">调试：Hook 为什么还是不触发</h2></p><p>装好之后用了几天，发现不对劲——明明配置好了，为什么从来没看到过中文摘要？让 Claude 检查了四五轮，每次都回复"没问题啊，应该能跑"，但实际就是不生效。
+<p>
+<h3>线索一：debug 日志</h3></p><p>加了一行 debug log 把 stdin 原样写到文件：</p><p></code>`<code>js
+<p>const LOG = '~/.claude/hooks/preapproval.log';
+<p>function debug(...args) {
+<p>  fs.appendFileSync(LOG, new Date().toISOString() + ' ' + args.join(' ') + '\n');
+<p>}
+</code>`<code></p><p>日志显示 hook <strong>确实在跑</strong>，每次工具调用都有记录。说明 hook 注册和触发机制都没问题，问题出在脚本内部。
+<p>
+<h3>定位：JSON 字段名不匹配</h3></p><p>对比日志中的原始 JSON 和脚本解析逻辑，发现根本原因：</p><p>Claude Code 实际传的 JSON 结构是：</p><p></code>`<code>json
+<p>{
+<p>  "hook_event_name": "PreToolUse",
+<p>  "tool_name": "Bash",
+<p>  "tool_input": { "command": "ls ..." }
+<p>}
+</code>`<code></p><p>而脚本最初写的解析逻辑是：</p><p></code>`<code>js
+<p>const toolCall = input.tool_call || {};           // → undefined → {}
+<p>const tool = (toolCall.tool || input.tool);       // → undefined → 'unknown'
+<p>const args = (toolCall.arguments || input.arguments); // → undefined → {}
+</code>`<code></p><p>脚本在找 </code>tool_call.tool<code>，实际字段是 </code>tool_name<code>——两者从来没有对上过。结果所有工具都被识别为 </code>unknown<code>，参数永远为空对象，摘要退化成一串无意义的泛用文本。之前几次迭代都意识到了"可能需要兼容不同格式"，加了 fallback，但 fallback 优先级排错了——</code>input.tool<code> 又不存在，始终落到兜底值。
+<p>
+<h3>根源二：权限预授权吞掉了弹窗</h3></p><p>即便脚本修好了，还有一个问题：我的 </code>settings.json<code> 里配了大量预授权规则（</code>Bash(git <em>)<code>、</code>Bash(npm </em>)<code> 等）。</code>PreToolUse<code> hook 返回 </code>decision: 'ask'<code> 时，中文摘要是附加在审批弹窗旁边的——但如果操作已被预授权，弹窗根本不会出现，摘要也无处可显示。
+<p>
+<h3>解决</h3></p><p>两步修好：
+<p>
+<li><strong>脚本改正字段名</strong>：</code>input.tool_name<code> 优先于 </code>input.tool_call.tool<code>，</code>input.tool_input<code> 优先于 </code>input.tool_call.arguments<code></li>
+<li><strong>改用 PostToolUse</strong>：把 hook 事件从 </code>PreToolUse<code> 换成 </code>PostToolUse<code>，每次工具调用<strong>之后</strong>输出纯文本摘要，不再依赖审批弹窗</li></p><p></code>`<code>json
+<p>{
+<p>  "hooks": {
+<p>    "PostToolUse": [
+<p>      {
+<p>        "matcher": "Write|Edit|Bash|Glob|Grep|Read|WebFetch|WebSearch",
+<p>        "hooks": [{ "type": "command", "command": "node ..." }]
+<p>      }
+<p>    ]
+<p>  }
+<p>}
+</code>``
+<p>
+<h3>教训</h3></p><p>Hook 调试看不见 stdout，只有一个 yes/no 弹窗，出问题时完全黑盒。这次能定位全靠 debug log 把原始输入写盘——没有这行日志，光靠肉眼永远猜不到字段名对不上。给后续写 hook 的自己的建议：<strong>debug log 先加上，不要等发现问题了再补</strong>。
+<p>2:["$","div",null,{"className":"PostDetail_pageLayout__5uM1J","children":[["$","$La",null,{"content":"$b"}],["$","article",null,{"className":"PostDetail_container__Z8_ZL","children":[["$","$L8",null,{"href":"/","className":"PostDetail_backLink___eazR","children":"← 返回首页"}],["$","div",null,{"className":"PostDetail_header__C2cUQ","children":[["$","div",null,{"className":"PostDetail_meta__2qpY2","children":[["$","time",null,{"className":"PostDetail_date__jgVbX","children":"2026-05-24"}],["$","$L8",null,{"href":"/categories/%E6%8A%80%E6%9C%AF","className":"PostDetail_category__Npi0s","children":"技术"}]]}],["$","h1",null,{"className":"PostDetail_title__qQKeB","children":"给 Claude Code 装上中文审批摘要 Hook"}],["$","div",null,{"className":"PostDetail_divider__mbBrX"}]]}],["$","$Lc",null,{"selector":"[data-anim-content] > *","children":["$","div",null,{"className":"PostDetail_content__qxOt7","data-anim-content":true,"dangerouslySetInnerHTML":{"__html":"$d"}}]}],["$","div",null,{"className":"PostDetail_tags__rxApn","children":[["$","span","Claude Code",{"className":"PostDetail_tag__8k22N","children":["#","Claude Code"]}],["$","span","AI",{"className":"PostDetail_tag__8k22N","children":["#","AI"]}],["$","span","Hook",{"className":"PostDetail_tag__8k22N","children":["#","Hook"]}],["$","span","Node.js",{"className":"PostDetail_tag__8k22N","children":["#","Node.js"]}],["$","span","调试",{"className":"PostDetail_tag__8k22N","children":["#","调试"]}]]}]]}]]}]
+9:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"给 Claude Code 装上中文审批摘要 Hook | My Blog"}],["$","meta","3",{"name":"description","content":"写一个 PreToolUse Hook，让 Claude Code 每次请求审批时自动显示中文变更摘要——从踩坑、迭代到 debug，完整记录。"}],["$","link","4",{"rel":"icon","href":"/my-blog/favicon.ico"}],["$","link","5",{"rel":"apple-touch-icon","href":"/my-blog/apple-touch-icon.png"}]]
 1:null
