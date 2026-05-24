@@ -1,0 +1,92 @@
+3:I[4707,[],""]
+5:I[6423,[],""]
+6:I[279,["972","static/chunks/972-c020e7f518b751dc.js","185","static/chunks/app/layout-b446f48b298f845b.js"],"default"]
+7:I[9295,["972","static/chunks/972-c020e7f518b751dc.js","185","static/chunks/app/layout-b446f48b298f845b.js"],"default"]
+8:I[2972,["972","static/chunks/972-c020e7f518b751dc.js","333","static/chunks/app/posts/%5Bslug%5D/page-b7eac95911a72109.js"],""]
+4:["slug","blog-writer-skill","d"]
+0:["ydn9Uly7K7XGwHC2YgQPJ",[[["",{"children":["posts",{"children":[["slug","blog-writer-skill","d"],{"children":["__PAGE__?{\"slug\":\"blog-writer-skill\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["posts",{"children":[["slug","blog-writer-skill","d"],{"children":["__PAGE__",{},[["$L1","$L2",[["$","link","0",{"rel":"stylesheet","href":"/my-blog/_next/static/css/503d895ae54c23e2.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children","posts","children","$4","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children","posts","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/my-blog/_next/static/css/ca166833eeb77d96.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"zh-CN","children":["$","body",null,{"children":["$","$L6",null,{"children":[["$","$L7",null,{}],["$","main",null,{"style":{"minHeight":"calc(100vh - var(--header-height))","paddingTop":"var(--header-height)"},"children":["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":["$","div",null,{"style":{"display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center","minHeight":"60vh","textAlign":"center","padding":"2rem"},"children":[["$","style",null,{"children":"\n        .not-found-btn {\n          display: inline-block;\n          padding: 0.75rem 2rem;\n          border: 1px solid var(--accent-yellow);\n          color: var(--accent-yellow);\n          font-size: 0.875rem;\n          letter-spacing: 0.05em;\n          transition: all 0.3s ease;\n        }\n        .not-found-btn:hover {\n          background: var(--accent-yellow) !important;\n          color: #000 !important;\n        }\n      "}],["$","div",null,{"style":{"fontSize":"5rem","fontWeight":700,"fontFamily":"var(--font-display)","color":"var(--accent-yellow)","lineHeight":1,"marginBottom":"1rem"},"children":"404"}],["$","div",null,{"className":"section-divider","style":{"maxWidth":"200px","margin":"0 auto 1.5rem"}}],["$","p",null,{"style":{"color":"var(--text-secondary)","marginBottom":"2rem","fontSize":"1rem"},"children":"页面未找到"}],["$","$L8",null,{"href":"/","className":"not-found-btn","children":"返回首页"}]]}],"notFoundStyles":[]}]}],["$","footer",null,{"className":"Footer_footer__JrJN9","children":["$","div",null,{"className":"Footer_inner__QTh9n","children":[["$","span",null,{"className":"Footer_copy__fxI_X","children":["© ",2026," My Blog. All rights reserved."]}],["$","div",null,{"className":"Footer_links__g0H7R","children":["$","a",null,{"href":"https://github.com","target":"_blank","rel":"noopener noreferrer","className":"Footer_link__ZIL7i","children":"GitHub"}]}]]}]}]]}]}]}]],null],null],["$L9",null]]]]
+a:I[568,["972","static/chunks/972-c020e7f518b751dc.js","333","static/chunks/app/posts/%5Bslug%5D/page-b7eac95911a72109.js"],"default"]
+c:I[1321,["972","static/chunks/972-c020e7f518b751dc.js","333","static/chunks/app/posts/%5Bslug%5D/page-b7eac95911a72109.js"],"default"]
+b:T85d,
+## 背景
+
+每次让 Claude 帮忙写博客，都要在 prompt 里重复"精简一点""用表格总结""标题加冒号"。写上一篇 bug 修复 blog 时，第一版偏长，说了"精简一些"才缩到满意。
+
+决定把它做成 skill——固化风格，省掉每次重复约束。
+
+## 设计
+
+跟 Claude 聊了三个问题把需求定下来：
+
+- **什么时候触发？** "写成博客""记录成文章""把修改整理出来"
+- **输入是什么？** 对话上下文，不需要额外提供素材
+- **输出是什么？** 先展示审阅，确认后写入 `content/posts/`，构建后推 GitHub
+
+写作风格从已有的两篇 blog 提取模板：背景 → 分析 → 修复 → 总结表格。代码片段是核心，段落短，标题用冒号分隔。
+
+## 评测
+
+skill-creator 框架要求跑 with_skill vs without_skill 对照测试。设计了 3 个用例：
+
+| 用例 | 场景 |
+|------|------|
+| CSS bug 修复 | writing-mode + scroll-behavior 两个坑 |
+| 暗色模式实现 | next-themes + hydration 闪烁 |
+| ESLint 配置 | flat config + prettier 版本冲突 |
+
+6 个 agent 并行跑。用 8 个客观指标评分：frontmatter 完整性、日期格式、代码块、章节结构、总结段落、水词检查、标题格式、长度控制。
+
+## 结果
+
+| | With Skill | Without Skill |
+|---|---|---|
+| Pass Rate | **100%** | 87.5% |
+| 超长 | 0 篇 | 2 篇 |
+| 水词 | 0 篇 | 1 篇 |
+| 平均耗时 | 235s | 337s |
+
+带 skill 的三篇全部满分。不带 skill 的暗色模式和 ESLint 两篇都超过 5000 字符，暗色模式那篇还出现了啰嗦的开场白。
+
+时间上快了 30%。有明确结构约束，模型不需要自己琢磨格式和篇幅。
+
+## 总结
+
+做这个 skill 的收益不在于让模型"写得更漂亮"——模型还是那个模型。收益在于：
+
+1. **风格稳定**：不会这篇精简下篇啰嗦，每次格式一致
+2. **省掉重复指令**：不用再说"精简一点""用表格"
+3. **审阅 + 推送一步走**：确认即发布，不用手动 git 操作
+
+这个 skill 已经内置在当前环境，直接说 **"把这次的修改写成博客"** 就会触发。
+d:T9ce,<p>
+<h2 id="背景">背景</h2></p><p>每次让 Claude 帮忙写博客，都要在 prompt 里重复"精简一点""用表格总结""标题加冒号"。写上一篇 bug 修复 blog 时，第一版偏长，说了"精简一些"才缩到满意。</p><p>决定把它做成 skill——固化风格，省掉每次重复约束。
+<p>
+<h2 id="设计">设计</h2></p><p>跟 Claude 聊了三个问题把需求定下来：
+<p>
+<ul><li><strong>什么时候触发？</strong> "写成博客""记录成文章""把修改整理出来"</li>
+<li><strong>输入是什么？</strong> 对话上下文，不需要额外提供素材</li>
+<li><strong>输出是什么？</strong> 先展示审阅，确认后写入 <code>content/posts/</code>，构建后推 GitHub</li>
+</ul>
+<p>写作风格从已有的两篇 blog 提取模板：背景 → 分析 → 修复 → 总结表格。代码片段是核心，段落短，标题用冒号分隔。
+<p>
+<h2 id="评测">评测</h2></p><p>skill-creator 框架要求跑 with_skill vs without_skill 对照测试。设计了 3 个用例：</p><p>| 用例 | 场景 |
+<p>|<hr><hr>|<hr><hr>|
+<p>| CSS bug 修复 | writing-mode + scroll-behavior 两个坑 |
+<p>| 暗色模式实现 | next-themes + hydration 闪烁 |
+<p>| ESLint 配置 | flat config + prettier 版本冲突 |</p><p>6 个 agent 并行跑。用 8 个客观指标评分：frontmatter 完整性、日期格式、代码块、章节结构、总结段落、水词检查、标题格式、长度控制。
+<p>
+<h2 id="结果">结果</h2></p><p>| | With Skill | Without Skill |
+<p>|<hr>|<hr>|<hr>|
+<p>| Pass Rate | <strong>100%</strong> | 87.5% |
+<p>| 超长 | 0 篇 | 2 篇 |
+<p>| 水词 | 0 篇 | 1 篇 |
+<p>| 平均耗时 | 235s | 337s |</p><p>带 skill 的三篇全部满分。不带 skill 的暗色模式和 ESLint 两篇都超过 5000 字符，暗色模式那篇还出现了啰嗦的开场白。</p><p>时间上快了 30%。有明确结构约束，模型不需要自己琢磨格式和篇幅。
+<p>
+<h2 id="总结">总结</h2></p><p>做这个 skill 的收益不在于让模型"写得更漂亮"——模型还是那个模型。收益在于：
+<p>
+<li><strong>风格稳定</strong>：不会这篇精简下篇啰嗦，每次格式一致</li>
+<li><strong>省掉重复指令</strong>：不用再说"精简一点""用表格"</li>
+<li><strong>审阅 + 推送一步走</strong>：确认即发布，不用手动 git 操作</li></p><p>这个 skill 已经内置在当前环境，直接说 <strong>"把这次的修改写成博客"</strong> 就会触发。
+<p>2:["$","div",null,{"className":"PostDetail_pageLayout__5uM1J","children":[["$","$La",null,{"content":"$b"}],["$","article",null,{"className":"PostDetail_container__Z8_ZL","children":[["$","$L8",null,{"href":"/","className":"PostDetail_backLink___eazR","children":"← 返回首页"}],["$","div",null,{"className":"PostDetail_header__C2cUQ","children":[["$","div",null,{"className":"PostDetail_meta__2qpY2","children":[["$","time",null,{"className":"PostDetail_date__jgVbX","children":"2026-05-24"}],["$","$L8",null,{"href":"/categories/%E6%8A%80%E6%9C%AF","className":"PostDetail_category__Npi0s","children":"技术"}]]}],["$","h1",null,{"className":"PostDetail_title__qQKeB","children":"给 Claude 写了个 Blog 写作 Skill"}],["$","div",null,{"className":"PostDetail_divider__mbBrX"}]]}],["$","$Lc",null,{"selector":"[data-anim-content] > *","children":["$","div",null,{"className":"PostDetail_content__qxOt7","data-anim-content":true,"dangerouslySetInnerHTML":{"__html":"$d"}}]}],["$","div",null,{"className":"PostDetail_tags__rxApn","children":[["$","span","Claude Code",{"className":"PostDetail_tag__8k22N","children":["#","Claude Code"]}],["$","span","Skill",{"className":"PostDetail_tag__8k22N","children":["#","Skill"]}],["$","span","Blog",{"className":"PostDetail_tag__8k22N","children":["#","Blog"]}],["$","span","自动化",{"className":"PostDetail_tag__8k22N","children":["#","自动化"]}],["$","span","skill-creator",{"className":"PostDetail_tag__8k22N","children":["#","skill-creator"]}]]}]]}]]}]
+9:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"给 Claude 写了个 Blog 写作 Skill | My Blog"}],["$","meta","3",{"name":"description","content":"用 skill-creator 把博客写作流程做成可复用的 skill，基准测试 with_skill 满分 vs without_skill 87.5%。"}],["$","link","4",{"rel":"icon","href":"/my-blog/favicon.ico"}],["$","link","5",{"rel":"apple-touch-icon","href":"/my-blog/apple-touch-icon.png"}]]
+1:null
