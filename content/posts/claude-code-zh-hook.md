@@ -3,7 +3,7 @@ title: "给 Claude Code 装上中文审批摘要 Hook"
 date: 2026-05-24
 category: "技术"
 tags: ["Claude Code", "AI", "Hook", "Node.js", "调试"]
-description: "写一个 PreToolUse Hook，让 Claude Code 每次请求审批时自动显示中文变更摘要——从踩坑、迭代到 debug，完整记录。"
+description: "写一个中文审批摘要 Hook，从字段名写错、事件类型选错到发现 reason 字段——完整的踩坑、迭代与 debug 记录。"
 ---
 
 ## 痛点
@@ -140,9 +140,9 @@ const args = (toolCall.arguments || input.arguments); // → undefined → {}
 
 发现 PreToolUse 不显示，我第一反应是换成 `PostToolUse`——每次工具执行完都输出摘要。但这完全是方向性错误：PostToolUse 在工具**执行之后**才触发，而审批弹窗在**执行之前**就已经关了。摘要永远追不上弹窗。
 
-### 最终方案：PermissionRequest
+### 弯路尽头：PermissionRequest
 
-回头看 SKILL.md，正确的事件是 `PermissionRequest`——它专门用于在权限弹窗旁附加信息。不需要 matcher，不需要返回 JSON 决策，只需要向 stdout 打印文本，Claude Code 会自动把输出附在弹窗里：
+回头看 SKILL.md，正确的事件是 `PermissionRequest`——它专门用于在权限弹窗旁附加信息。不需要 matcher，不需要返回 JSON 决策，只需要向 stdout 打印文本：
 
 ```json
 {
@@ -156,11 +156,41 @@ const args = (toolCall.arguments || input.arguments); // → undefined → {}
 }
 ```
 
-三条改动到位：
+换上去之后，中文摘要确实出现在弹窗旁边了。但 PermissionRequest 有个限制：它只负责在弹窗旁"贴一段文本"，无法通过返回 JSON 来控制审批流程——脚本只能打印，不能做拦截或自动决策。
 
-1. **字段名修正**：`input.tool_name` / `input.tool_input` 替代 `input.tool_call.tool` / `input.tool_call.arguments`
-2. **事件类型**：`PreToolUse` → `PermissionRequest`
-3. **输出格式**：直接 `console.log(summary)` 打印纯文本，不再包 JSON
+### 终极方案：PreToolUse + reason 字段
+
+用了一段时间 PermissionRequest，总觉得不够优雅。直到某天重读 Claude Code Hook 文档，发现 PreToolUse 的 JSON 返回值中有一个被我忽略的字段：`reason`。
+
+Hook 返回的 JSON 结构是：
+
+```json
+{
+  "decision": "ask",
+  "reason": "这里写的内容会嵌入到审批弹窗中"
+}
+```
+
+`reason` 字段的内容**会直接显示在审批弹窗的提示文字里**——这不就是我一开始想要的效果吗？之前只关注了 `output` 字段，完全没注意到 `reason`。
+
+于是最终方案又回到了 PreToolUse，但这次参数对了：
+
+1. **事件**：`PreToolUse`（拦截工具调用，返回决策）
+2. **matcher**：`Write|Edit|Bash|Glob|Grep|Read|WebFetch|WebSearch`
+3. **输出**：JSON `{ decision: "ask", reason: summary }`
+
+脚本同时兼容两种模式——检测到事件是 `permissionrequest` 时打印纯文本，否则返回 JSON：
+
+```js
+if (event === 'permissionrequest') {
+  console.log(summary);               // 纯文本附加
+} else {
+  console.log(JSON.stringify({        // JSON 嵌入弹窗
+    decision: 'ask',
+    reason: summary
+  }));
+}
+```
 
 ### 教训
 
@@ -168,6 +198,6 @@ const args = (toolCall.arguments || input.arguments); // → undefined → {}
 
 - **第一道**：JSON 字段名写错了，一开始就没有正确识别工具
 - **第二道**：安装时选错了事件类型（PreToolUse 而非 PermissionRequest）
-- **第三道**：修复时下意识选了 PostToolUse，执行时序根本不对
+- **第三道**：修到 PermissionRequest 就以为到终点了，没继续探索 PreToolUse 的 `reason` 字段
 
 事后看每一步都"明显"，但当时没有任何可见反馈——hook 的 stdout 不直接展示给用户，出问题时完全黑盒。能定位全靠那行 debug log。**给以后写 hook 的自己：先加日志，不要相信"看起来能跑"。**
