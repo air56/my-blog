@@ -130,30 +130,44 @@ const args = (toolCall.arguments || input.arguments); // → undefined → {}
 
 脚本在找 `tool_call.tool`，实际字段是 `tool_name`——两者从来没有对上过。结果所有工具都被识别为 `unknown`，参数永远为空对象，摘要退化成一串无意义的泛用文本。之前几次迭代都意识到了"可能需要兼容不同格式"，加了 fallback，但 fallback 优先级排错了——`input.tool` 又不存在，始终落到兜底值。
 
-### 根源二：权限预授权吞掉了弹窗
+### 根源二：PreToolUse 的 output 不嵌入审批弹窗
 
-即便脚本修好了，还有一个问题：我的 `settings.json` 里配了大量预授权规则（`Bash(git *)`、`Bash(npm *)` 等）。`PreToolUse` hook 返回 `decision: 'ask'` 时，中文摘要是附加在审批弹窗旁边的——但如果操作已被预授权，弹窗根本不会出现，摘要也无处可显示。
+字段名修好后测试，脚本输出完全正确——但真正触发审批时，弹窗依然是纯英文。
 
-### 解决
+原因是 PreToolUse hook 返回的 JSON 中，`output` 字段**不会嵌入 Claude Code 原生的 permission prompt**。它可能被记录到某处，但用户在 yes/no 弹窗里根本看不到。SKILL.md 其实写了："PermissionRequest hook 的输出会附加在已有的权限弹窗旁"——当初安装时配置错了事件类型。
 
-两步修好：
+### 走弯路：PostToolUse
 
-1. **脚本改正字段名**：`input.tool_name` 优先于 `input.tool_call.tool`，`input.tool_input` 优先于 `input.tool_call.arguments`
-2. **改用 PostToolUse**：把 hook 事件从 `PreToolUse` 换成 `PostToolUse`，每次工具调用**之后**输出纯文本摘要，不再依赖审批弹窗
+发现 PreToolUse 不显示，我第一反应是换成 `PostToolUse`——每次工具执行完都输出摘要。但这完全是方向性错误：PostToolUse 在工具**执行之后**才触发，而审批弹窗在**执行之前**就已经关了。摘要永远追不上弹窗。
+
+### 最终方案：PermissionRequest
+
+回头看 SKILL.md，正确的事件是 `PermissionRequest`——它专门用于在权限弹窗旁附加信息。不需要 matcher，不需要返回 JSON 决策，只需要向 stdout 打印文本，Claude Code 会自动把输出附在弹窗里：
 
 ```json
 {
   "hooks": {
-    "PostToolUse": [
+    "PermissionRequest": [
       {
-        "matcher": "Write|Edit|Bash|Glob|Grep|Read|WebFetch|WebSearch",
-        "hooks": [{ "type": "command", "command": "node ..." }]
+        "hooks": [{ "type": "command", "command": "node .claude/hooks/preapproval.cjs" }]
       }
     ]
   }
 }
 ```
 
+三条改动到位：
+
+1. **字段名修正**：`input.tool_name` / `input.tool_input` 替代 `input.tool_call.tool` / `input.tool_call.arguments`
+2. **事件类型**：`PreToolUse` → `PermissionRequest`
+3. **输出格式**：直接 `console.log(summary)` 打印纯文本，不再包 JSON
+
 ### 教训
 
-Hook 调试看不见 stdout，只有一个 yes/no 弹窗，出问题时完全黑盒。这次能定位全靠 debug log 把原始输入写盘——没有这行日志，光靠肉眼永远猜不到字段名对不上。给后续写 hook 的自己的建议：**debug log 先加上，不要等发现问题了再补**。
+三道防线全被绕过：
+
+- **第一道**：JSON 字段名写错了，一开始就没有正确识别工具
+- **第二道**：安装时选错了事件类型（PreToolUse 而非 PermissionRequest）
+- **第三道**：修复时下意识选了 PostToolUse，执行时序根本不对
+
+事后看每一步都"明显"，但当时没有任何可见反馈——hook 的 stdout 不直接展示给用户，出问题时完全黑盒。能定位全靠那行 debug log。**给以后写 hook 的自己：先加日志，不要相信"看起来能跑"。**
