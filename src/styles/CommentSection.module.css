@@ -1,0 +1,61 @@
+/* src/styles/CommentSection.module.css */
+.section {
+  margin-top: var(--space-3xl);
+  padding-top: var(--space-lg);
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+  color: var(--text-primary);
+}
+
+.tip {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: var(--space-lg);
+}
+
+.tip a {
+  color: var(--accent-yellow);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.divider {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--accent-pink) 0,
+    var(--accent-pink) 1.5rem,
+    var(--accent-green) 1.5rem,
+    var(--accent-green) 3rem,
+    var(--accent-yellow) 3rem,
+    transparent 7rem
+  );
+  margin-bottom: var(--space-xl);
+}
+
+.wrapper {
+  min-height: 200px;
+}
+
+/* giscus 暗色主题覆盖 — 保持与博客视觉一致 */
+.wrapper :global(.giscus) {
+  --color-prettylights-syntax-comment: var(--text-muted);
+  --color-prettylights-syntax-constant: var(--accent-green);
+  --color-prettylights-syntax-string: var(--accent-yellow);
+}
+
+/* 加载中状态 */
+.wrapper:empty::after {
+  content: '加载评论中...';
+  display: block;
+  text-align: center;
+  padding: var(--space-2xl) 0;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}

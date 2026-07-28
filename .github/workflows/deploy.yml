@@ -22,6 +22,9 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
+        env:
+          NEXT_PUBLIC_GISCUS_REPO_ID: R_kgDOSlmr5A
+          NEXT_PUBLIC_GISCUS_CATEGORY_ID: DIC_kwDOSlmr5M4DCH83
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getPostBySlug, getPostSlugs } from '@/lib/posts';
 import PostSidebar from '@/components/PostSidebar';
+import CommentSection from '@/components/CommentSection';
 import ScrollAnimProvider from '@/components/ScrollAnimProvider';
 import styles from '@/styles/PostDetail.module.css';
 import type { Metadata } from 'next';
@@ -84,6 +85,8 @@ export default async function PostPage({ params }: Props) {
             </span>
           ))}
         </div>
+
+        <CommentSection />
       </article>
     </div>
   );
