@@ -1,0 +1,254 @@
+/* src/app/page.module.css */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  overflow: hidden;
+  background: #000;
+}
+
+.heroImage {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 30% center;
+  background-color: #000;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(0,0,0,0.15) 0%,
+    rgba(0,0,0,0.15) 35%,
+    rgba(0,0,0,0.5) 60%,
+    rgba(0,0,0,0.8) 100%
+  );
+}
+
+.heroBottomFade {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 40vh;
+  background: linear-gradient(
+    180deg,
+    rgba(0,0,0,0) 0%,
+    rgba(0,0,0,0.3) 40%,
+    #000 100%
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  max-width: 500px;
+  padding: 0 80px 0 40px;
+}
+
+.heroBadge {
+  display: inline-block;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  padding: 6px 20px;
+  border: 1px solid rgba(255,250,0,0.25);
+  background: rgba(255,250,0,0.08);
+  color: #fffa00;
+  margin-bottom: 28px;
+  backdrop-filter: blur(4px);
+}
+
+.heroTitle {
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.03em;
+  margin-bottom: 20px;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+}
+
+.heroSubtitle {
+  font-size: 1rem;
+  color: #aaa;
+  line-height: 1.8;
+  max-width: 420px;
+}
+
+.heroStats {
+  display: flex;
+  justify-content: flex-end;
+  gap: 40px;
+  margin-top: 40px;
+}
+
+.heroStat {
+  text-align: right;
+}
+
+.heroStatNum {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fffa00;
+}
+
+.heroStatLabel {
+  font-size: 0.75rem;
+  color: #666;
+  letter-spacing: 0.1em;
+  margin-top: 4px;
+}
+
+.scrollIndicator {
+  position: absolute;
+  bottom: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255,255,255,0.35);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+.scrollArrow {
+  width: 20px;
+  height: 20px;
+  border-right: 1.5px solid rgba(255,255,255,0.35);
+  border-bottom: 1.5px solid rgba(255,255,255,0.35);
+  transform: rotate(45deg);
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(10px); }
+}
+
+/* Posts section */
+.postsSection {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 48px 80px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  padding-top: 64px;
+}
+
+.sectionTitle {
+  font-size: 1.6rem;
+  font-weight: 700;
+  position: relative;
+  padding-left: 18px;
+  font-family: var(--font-display);
+}
+
+.sectionTitle::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 2px;
+  bottom: 2px;
+  width: 3px;
+  background: linear-gradient(180deg, #ff1aac, #00ffa2, #fffa00);
+}
+
+.sectionSubtitle {
+  font-size: 0.85rem;
+  color: #555;
+  margin-top: 6px;
+  margin-left: 18px;
+}
+
+.sectionLink {
+  color: #555;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.sectionLink:hover {
+  color: #fffa00;
+}
+
+.sectionDivider {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    #ff1aac 0,
+    #ff1aac 1.5rem,
+    #00ffa2 1.5rem,
+    #00ffa2 3rem,
+    #fffa00 3rem,
+    transparent 7rem
+  );
+  margin-bottom: 40px;
+}
+
+.postGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 24px;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 80px 0;
+  color: var(--text-muted);
+}
+
+.emptyIcon {
+  font-size: 3rem;
+  margin-bottom: var(--space-md);
+  opacity: 0.5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero {
+    min-height: 500px;
+  }
+
+  .heroContent {
+    padding: 0 24px 0 16px;
+    max-width: 100%;
+  }
+
+  .heroStats {
+    gap: 24px;
+  }
+
+  .scrollIndicator {
+    bottom: 32px;
+  }
+
+  .postsSection {
+    padding: 0 20px 60px;
+  }
+
+  .postGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
