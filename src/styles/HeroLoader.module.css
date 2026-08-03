@@ -1,0 +1,53 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.35s ease;
+}
+
+.barTrack {
+  width: 240px;
+  height: 2px;
+  background: rgba(255, 250, 0, 0.15);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  background: #fffa00;
+  transform-origin: left;
+  animation: loading 0.9s ease-in-out infinite;
+  border-radius: 1px;
+}
+
+@keyframes loading {
+  0% { transform: scaleX(0); }
+  60% { transform: scaleX(0.6); }
+  100% { transform: scaleX(1); }
+}
+
+.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.visible {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.35s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar {
+    animation: none;
+    transform: scaleX(0.7);
+  }
+  .overlay, .visible {
+    transition: none;
+  }
+}
