@@ -70,6 +70,7 @@ export default async function PostPage({ params }: Props) {
             .replace(/^- (.+)$/gm, '<li>$1</li>')
             .replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>')
             .replace(/^(\d+)\. (.+)$/gm, '<li>$2</li>')
+            .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" />')
             .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
             .replace(/---/g, '<hr>')
             .replace(/\n\n(?!<[hupbld])/g, '</p><p>')
