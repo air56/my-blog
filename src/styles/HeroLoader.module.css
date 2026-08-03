@@ -9,6 +9,10 @@
   transition: opacity 0.35s ease;
 }
 
+.fadeOut {
+  opacity: 0;
+}
+
 .barTrack {
   width: 240px;
   height: 2px;
@@ -19,7 +23,7 @@
 
 .bar {
   height: 100%;
-  background: #fffa00;
+  background: var(--accent-yellow);
   transform-origin: left;
   animation: loading 0.9s ease-in-out infinite;
   border-radius: 1px;
