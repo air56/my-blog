@@ -1,14 +1,14 @@
 ---
-title: "Telegram 接入 Bot 并实现远程控制电脑"
+title: "Telegram 接入 LLM 对话"
 date: 2026-08-09
 category: "技术"
-tags: ["Telegram", "DeepSeek", "aiogram", "Python", "远程控制"]
-description: "把 Telegram bot 接入 DeepSeek AI：TDD 实现、三个真 Bug、代理与开机自启，下一步扩展远程控制电脑。"
+tags: ["Telegram", "DeepSeek", "aiogram", "Python"]
+description: "把 Telegram bot 接入 DeepSeek AI：TDD 实现、三个真 Bug、代理与开机自启，随时随地对话。"
 ---
 
 ## 背景
 
-想在自己的 Telegram 里随时和 AI 对话，顺便为"远程控制电脑"打基础。于是先做了第一步：写一个 Telegram bot，用户发消息，bot 透传给 DeepSeek，把回答发回来。
+想在自己的 Telegram 里随时和 AI 对话。于是做了第一步：写一个 Telegram bot，用户发消息，bot 透传给 DeepSeek，把回答发回来。
 
 技术栈：Python + aiogram 3.x，本机 Windows 跑，长轮询模式。
 
@@ -147,18 +147,6 @@ if exist "%PID_FILE%" (
 
 踩过一个 bat 的坑：**`set /p` 在 `if` 括号块内要用延迟展开 `!OLD_PID!`**，否则 `%OLD_PID%` 在解析整块时还是空的，导致 `FINDSTR: 没有搜索字符串`。
 
-## 下一步：远程控制电脑
-
-到这里，Telegram 接入 bot 这条链路已经跑通：随时对话、开机自启、不依赖任何会话。
-
-下一阶段的目标是把这条链路**扩展成远程控制**：
-
-- 在 bot 里加命令白名单，比如 `/cmd` 执行指定命令、`/open` 打开程序
-- 复用现有的白名单校验——只有自己的 chat_id 能触发控制指令
-- 执行结果用现在这套分段发送逻辑回传
-
-入口已经有了，接下来是给 `handlers.py` 加"指令处理器"，让 bot 从"只会对话"变成"能动手"。
-
 ## 总结
 
 | 根因 | 修复 | 教训 |
@@ -169,4 +157,4 @@ if exist "%PID_FILE%" (
 | 会话关闭 bot 就停 | 开机自启 + PID 保护 | 常驻服务要独立于会话 |
 | bat 变量在括号内失效 | 延迟展开 | Windows 批处理的老坑 |
 
-Telegram 接入 bot 只是第一步。真正让"远程控制"可用，靠的是这条链路**跑得稳**——开机自启、自动重连、单实例保护，再加上白名单做安全边界。下一篇文章，等远程控制写完见。
+Telegram 接入 LLM 对话这条链路已经跑通：随时对话、开机自启、不依赖任何会话。真正让它稳定可用，靠的是这条链路**跑得稳**——开机自启、自动重连、单实例保护，再加上白名单做安全边界。
