@@ -6,8 +6,8 @@ import '@/styles/globals.css';
 
 export const metadata: Metadata = {
   title: {
-    default: 'My Blog',
-    template: '%s | My Blog',
+    default: 'RINのblog',
+    template: '%s | RINのblog',
   },
   description: '个人随笔博客',
   icons: {

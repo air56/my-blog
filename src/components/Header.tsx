@@ -46,7 +46,7 @@ export default function Header() {
       <header className={`${styles.header} ${scrolled ? styles.headerScrolled : ''}`}>
         <div className={styles.inner}>
           <Link href="/" className={styles.logo}>
-            <span className={styles.logoAccent}>◆</span> My Blog
+            <span className={styles.logoAccent}>◆</span> RINのblog
           </Link>
           <nav className={styles.nav}>
             {navItems.map((item) => (
