@@ -5,6 +5,7 @@ import PostSidebar from '@/components/PostSidebar';
 import CommentSection from '@/components/CommentSection';
 import ScrollAnimProvider from '@/components/ScrollAnimProvider';
 import styles from '@/styles/PostDetail.module.css';
+import { renderMarkdown } from '@/lib/markdown';
 import type { Metadata } from 'next';
 
 type Props = {
@@ -53,31 +54,9 @@ export default async function PostPage({ params }: Props) {
           <div
             className={styles.content}
             data-anim-content
-            dangerouslySetInnerHTML={{ __html: post.content
-            .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-            .replace(/^## (.+)$/gm, (_, title: string) => {
-              const id = title
-                .toLowerCase()
-                .replace(/\s+/g, '-')
-                .replace(/[^\w一-鿿-]/g, '');
-              return `<h2 id="${id}">${title}</h2>`;
-            })
-            .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-            .replace(/\*(.+?)\*/g, '<em>$1</em>')
-            .replace(/`([^`]+)`/g, '<code>$1</code>')
-            .replace(/^> (.+)$/gm, '<blockquote><p>$1</p></blockquote>')
-            .replace(/^- (.+)$/gm, '<li>$1</li>')
-            .replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>')
-            .replace(/^(\d+)\. (.+)$/gm, '<li>$2</li>')
-            .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" />')
-            .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
-            .replace(/---/g, '<hr>')
-            .replace(/\n\n(?!<[hupbld])/g, '</p><p>')
-            .replace(/^(?!<[hupbld\/])/gm, '<p>')
-            .replace(/<p>\s*<\/p>/g, '')
-          }}
-        /></ScrollAnimProvider>
+            dangerouslySetInnerHTML={{ __html: renderMarkdown(post.content) }}
+          />
+        </ScrollAnimProvider>
 
         <div className={styles.tags}>
           {post.tags.map((tag) => (

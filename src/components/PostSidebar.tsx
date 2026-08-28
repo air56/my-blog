@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import styles from '@/styles/PostSidebar.module.css';
+import { slugifyHeading } from '@/lib/heading';
 
 type Heading = { id: string; text: string };
 
@@ -16,10 +17,7 @@ export default function PostSidebar({ content }: { content: string }) {
     const usedIds = new Map<string, number>();
     let match: RegExpExecArray | null;
     while ((match = h2Regex.exec(content)) !== null) {
-      let id = match[1]
-        .toLowerCase()
-        .replace(/\s+/g, '-')
-        .replace(/[^\w一-鿿-]/g, '');
+      let id = slugifyHeading(match[1]);
       // Deduplicate heading IDs
       const count = usedIds.get(id) || 0;
       usedIds.set(id, count + 1);
