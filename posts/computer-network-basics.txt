@@ -1,0 +1,343 @@
+3:I[4707,[],""]
+5:I[6423,[],""]
+6:I[279,["972","static/chunks/972-c020e7f518b751dc.js","185","static/chunks/app/layout-78a19bbca5d8b12c.js"],"default"]
+7:I[9295,["972","static/chunks/972-c020e7f518b751dc.js","185","static/chunks/app/layout-78a19bbca5d8b12c.js"],"default"]
+8:I[2972,["972","static/chunks/972-c020e7f518b751dc.js","333","static/chunks/app/posts/%5Bslug%5D/page-b004d32e83dc278a.js"],""]
+4:["slug","computer-network-basics","d"]
+0:["NHTcuFp34Q02BpnY97MjS",[[["",{"children":["posts",{"children":[["slug","computer-network-basics","d"],{"children":["__PAGE__?{\"slug\":\"computer-network-basics\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["posts",{"children":[["slug","computer-network-basics","d"],{"children":["__PAGE__",{},[["$L1","$L2",[["$","link","0",{"rel":"stylesheet","href":"/my-blog/_next/static/css/9c279144fe2b1981.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children","posts","children","$4","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children","posts","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/my-blog/_next/static/css/ca166833eeb77d96.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"zh-CN","children":["$","body",null,{"children":["$","$L6",null,{"children":[["$","$L7",null,{}],["$","main",null,{"style":{"minHeight":"calc(100vh - var(--header-height))","paddingTop":"var(--header-height)"},"children":["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":["$","div",null,{"style":{"display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center","minHeight":"60vh","textAlign":"center","padding":"2rem"},"children":[["$","style",null,{"children":"\n        .not-found-btn {\n          display: inline-block;\n          padding: 0.75rem 2rem;\n          border: 1px solid var(--accent-yellow);\n          color: var(--accent-yellow);\n          font-size: 0.875rem;\n          letter-spacing: 0.05em;\n          transition: all 0.3s ease;\n        }\n        .not-found-btn:hover {\n          background: var(--accent-yellow) !important;\n          color: #000 !important;\n        }\n      "}],["$","div",null,{"style":{"fontSize":"5rem","fontWeight":700,"fontFamily":"var(--font-display)","color":"var(--accent-yellow)","lineHeight":1,"marginBottom":"1rem"},"children":"404"}],["$","div",null,{"className":"section-divider","style":{"maxWidth":"200px","margin":"0 auto 1.5rem"}}],["$","p",null,{"style":{"color":"var(--text-secondary)","marginBottom":"2rem","fontSize":"1rem"},"children":"页面未找到"}],["$","$L8",null,{"href":"/","className":"not-found-btn","children":"返回首页"}]]}],"notFoundStyles":[]}]}],["$","footer",null,{"className":"Footer_footer__JrJN9","children":["$","div",null,{"className":"Footer_inner__QTh9n","children":[["$","span",null,{"className":"Footer_copy__fxI_X","children":["© ",2026," RINのblog. All rights reserved."]}],["$","div",null,{"className":"Footer_links__g0H7R","children":["$","a",null,{"href":"https://github.com","target":"_blank","rel":"noopener noreferrer","className":"Footer_link__ZIL7i","children":"GitHub"}]}]]}]}]]}]}]}]],null],null],["$L9",null]]]]
+a:I[1100,["972","static/chunks/972-c020e7f518b751dc.js","333","static/chunks/app/posts/%5Bslug%5D/page-b004d32e83dc278a.js"],"default"]
+c:I[1321,["972","static/chunks/972-c020e7f518b751dc.js","333","static/chunks/app/posts/%5Bslug%5D/page-b004d32e83dc278a.js"],"default"]
+e:I[9917,["972","static/chunks/972-c020e7f518b751dc.js","333","static/chunks/app/posts/%5Bslug%5D/page-b004d32e83dc278a.js"],"default"]
+b:T1a5d,
+这是一篇根据一次网络基础学习对话整理的入门笔记。为了方便理解，把网络想象成一座城市：IP 是地址，网关是出口，端口是房间号，DNS 是电话簿。
+
+## 第一次提问：IP、网关、端口与网络安全
+
+### IP 地址：设备在网络中的地址
+
+IP 地址就像网络世界的门牌号。比如 `192.168.10.104`，表示一台设备在局域网中的位置。
+
+常见的内网 IP 包括：
+
+- `192.168.x.x`
+- `10.x.x.x`
+- `172.16.x.x` 到 `172.31.x.x`
+
+内网 IP 主要在家庭、学校或公司内部使用。家里的电脑和手机通常使用内网 IP，路由器再代表它们访问互联网，这个过程叫 NAT（网络地址转换）。
+
+### 子网掩码：判断是不是同一个“小区”
+
+例如：
+
+```text
+IP 地址：192.168.10.104
+子网掩码：255.255.255.0
+```
+
+这通常表示 `192.168.10.xxx` 属于同一个局域网。`192.168.10.104` 和 `192.168.10.105` 往往可以直接通信，而访问其他网络时需要经过路由器。
+
+### 网关：通往外部网络的出口
+
+如果电脑是 `192.168.10.104`，默认网关是 `192.168.10.1`，那么 `192.168.10.1` 通常就是路由器的局域网地址。
+
+```text
+电脑 192.168.10.104
+        │
+        ▼
+路由器 192.168.10.1
+        │
+        ▼
+互联网
+```
+
+同一局域网里的设备像邻居，可以直接找到彼此；要访问互联网，就必须从网关这个“小区大门”出去。
+
+### 端口：找到设备里的具体服务
+
+IP 只能找到一台设备，但一台电脑可以同时运行浏览器、游戏、文件共享和远程桌面，所以还需要端口号。
+
+```text
+192.168.10.104:8080
+```
+
+这里 `192.168.10.104` 是设备地址，`8080` 是服务的“房间号”。常见端口有：
+
+| 端口 | 常见用途 |
+| --- | --- |
+| `80` | HTTP 网页 |
+| `443` | HTTPS 加密网页 |
+| `53` | DNS 查询 |
+| `22` | SSH 远程管理 |
+| `3389` | Windows 远程桌面 |
+
+端口转发相当于把小区的一扇门直接指向家里某个房间，因此不懂用途时不要随便开放端口。
+
+### DNS：把域名翻译成 IP
+
+人容易记住 `www.example.com`，电脑更需要服务器的 IP 地址。DNS 就像互联网的电话簿：
+
+```text
+www.example.com
+        │
+        ▼
+DNS 查询域名对应的 IP
+        │
+        ▼
+浏览器连接服务器
+```
+
+### 路由器和网络安全
+
+家用路由器通常同时承担 Wi-Fi、DHCP、网关、NAT 和防火墙等工作。DHCP 会自动给设备分配 IP、子网掩码、网关和 DNS。
+
+网络安全可以用“房屋安全”理解：密码是钥匙，防火墙是门卫，HTTPS 是密封的信封，系统更新是在修补门锁漏洞。
+
+最重要的习惯是：使用 WPA2 或 WPA3、设置强密码、为重要账号开启双因素认证、及时更新设备，不随便打开陌生链接，也不要在不清楚用途时开启端口转发。
+
+## 第二次提问：ping 1.1.1.1 在做什么
+
+```powershell
+ping 1.1.1.1
+```
+
+这条命令会向公网中的 `1.1.1.1` 发送一个很小的测试请求，等待对方回应，用来检查电脑能否经过路由器到达互联网中的某个公网地址。
+
+`1.1.1.1` 是 Cloudflare 提供的公网地址，也常被用作 DNS 服务地址。但在 `ping` 命令中，它只是一个测试目标，并不是在进行 DNS 查询。
+
+常见返回结果中的：
+
+- `时间=35ms`：一次来回大约需要 35 毫秒，数值越小通常越快；
+- `0% 丢失`：测试数据包全部收到回复；
+- `请求超时`：可能是网络不通，也可能是对方禁止 ICMP ping，不能只凭这一项断定网页一定打不开。
+
+可以先测试本地网关，再测试公网：
+
+```powershell
+ping 192.168.10.1
+ping 1.1.1.1
+```
+
+第一个主要检查电脑到路由器，第二个主要检查路由器之外的网络。
+
+## 第三次提问：nslookup 与 DNS 地址
+
+```powershell
+nslookup example.com
+```
+
+这个命令是询问 DNS：“`example.com` 对应哪些 IP 地址？”输出中的：
+
+```text
+Server:  192.168.1.1
+Address: 192.168.1.1
+```
+
+表示本次查询使用的 DNS 服务器是 `192.168.1.1`。它不一定就是默认网关，可能来自路由器、网络软件、VPN 或手动配置。
+
+```text
+Name:    example.com
+Addresses: 2606:4700:10::6814:179a
+           2606:4700:10::ac42:93f3
+           172.66.147.243
+           104.20.23.154
+```
+
+这里的 `Addresses` 是域名对应的服务器地址。带冒号、较长的地址是 IPv6；四段数字组成的地址是 IPv4。一个域名有多个地址，可以用于分担访问压力、提高可靠性，并同时支持 IPv4 和 IPv6。
+
+`Non-authoritative answer` 表示 `192.168.1.1` 不是 `example.com` 的官方权威 DNS，只是替你查询或从缓存中返回结果，这通常是正常现象。
+
+`example.com` 是专门保留给教程和文档使用的示例域名，不是专门的 DNS 测试网站，但很适合用来测试 DNS 是否能够解析域名。
+
+## 第四次提问：MAC 地址与 Wi-Fi 配置
+
+### MAC 地址：网卡的硬件身份证
+
+MAC 地址通常长这样：
+
+```text
+AA:BB:CC:11:22:33
+```
+
+它是网卡在局域网中的硬件标识。可以这样区分：
+
+```text
+MAC 地址 = 网卡的身份证
+IP 地址  = 设备当前在网络中的住址
+```
+
+设备换到另一个 Wi-Fi 后，IP 地址通常会改变；MAC 地址通常保持不变，但 Windows 可以使用随机硬件地址来保护隐私。
+
+### 随机硬件地址：给不同 Wi-Fi 使用不同的临时 MAC
+
+开启后，电脑连接不同 Wi-Fi 时，可以使用不同的随机 MAC 地址，减少公共 Wi-Fi 通过 MAC 地址长期识别和追踪同一台设备的可能性。
+
+普通家庭、学校和咖啡店 Wi-Fi 通常建议开启。但如果网络使用 MAC 白名单、固定 IP、设备限速或特殊认证，随机 MAC 变化后可能被当成新设备，需要重新配置。
+
+### IP 分配：自动（DHCP）
+
+Wi-Fi 设置中的“IP 分配：自动（DHCP）”表示由路由器自动提供：
+
+```text
+IP 地址
+子网掩码
+默认网关
+DNS 服务器
+```
+
+普通家庭用户建议保持自动。只有搭建服务器、配置打印机、做虚拟机实验或网络明确要求固定地址时，才考虑手动设置 IP。
+
+### DNS 服务器分配：自动（DHCP）
+
+“DNS 服务器分配：自动（DHCP）”表示由路由器告诉电脑使用哪个 DNS。手动填写 DNS 可以用于排查 DNS 故障或使用指定的 DNS 服务，但更换 DNS 不会直接让所有网络速度变快。
+
+最后可以用四句话记住本篇内容：
+
+```text
+IP 地址   = 找到哪一台设备
+端口      = 找到设备里的哪一个服务
+网关      = 通往外部网络的出口
+DNS       = 把域名翻译成 IP
+MAC 地址  = 网卡的硬件身份证
+```
+d:T21ad,<p>这是一篇根据一次网络基础学习对话整理的入门笔记。为了方便理解，把网络想象成一座城市：IP 是地址，网关是出口，端口是房间号，DNS 是电话簿。</p>
+<h2 id="第一次提问ip网关端口与网络安全">第一次提问：IP、网关、端口与网络安全</h2>
+<h3 id="ip-地址设备在网络中的地址">IP 地址：设备在网络中的地址</h3>
+<p>IP 地址就像网络世界的门牌号。比如 <code>192.168.10.104</code>，表示一台设备在局域网中的位置。</p>
+<p>常见的内网 IP 包括：</p>
+<ul>
+<li><code>192.168.x.x</code></li>
+<li><code>10.x.x.x</code></li>
+<li><code>172.16.x.x</code> 到 <code>172.31.x.x</code></li>
+</ul>
+<p>内网 IP 主要在家庭、学校或公司内部使用。家里的电脑和手机通常使用内网 IP，路由器再代表它们访问互联网，这个过程叫 NAT（网络地址转换）。</p>
+<h3 id="子网掩码判断是不是同一个小区">子网掩码：判断是不是同一个“小区”</h3>
+<p>例如：</p>
+<pre><code class="language-text">IP 地址：192.168.10.104
+子网掩码：255.255.255.0
+</code></pre>
+<p>这通常表示 <code>192.168.10.xxx</code> 属于同一个局域网。<code>192.168.10.104</code> 和 <code>192.168.10.105</code> 往往可以直接通信，而访问其他网络时需要经过路由器。</p>
+<h3 id="网关通往外部网络的出口">网关：通往外部网络的出口</h3>
+<p>如果电脑是 <code>192.168.10.104</code>，默认网关是 <code>192.168.10.1</code>，那么 <code>192.168.10.1</code> 通常就是路由器的局域网地址。</p>
+<pre><code class="language-text">电脑 192.168.10.104
+        │
+        ▼
+路由器 192.168.10.1
+        │
+        ▼
+互联网
+</code></pre>
+<p>同一局域网里的设备像邻居，可以直接找到彼此；要访问互联网，就必须从网关这个“小区大门”出去。</p>
+<h3 id="端口找到设备里的具体服务">端口：找到设备里的具体服务</h3>
+<p>IP 只能找到一台设备，但一台电脑可以同时运行浏览器、游戏、文件共享和远程桌面，所以还需要端口号。</p>
+<pre><code class="language-text">192.168.10.104:8080
+</code></pre>
+<p>这里 <code>192.168.10.104</code> 是设备地址，<code>8080</code> 是服务的“房间号”。常见端口有：</p>
+<table>
+<thead>
+<tr>
+<th>端口</th>
+<th>常见用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>80</code></td>
+<td>HTTP 网页</td>
+</tr>
+<tr>
+<td><code>443</code></td>
+<td>HTTPS 加密网页</td>
+</tr>
+<tr>
+<td><code>53</code></td>
+<td>DNS 查询</td>
+</tr>
+<tr>
+<td><code>22</code></td>
+<td>SSH 远程管理</td>
+</tr>
+<tr>
+<td><code>3389</code></td>
+<td>Windows 远程桌面</td>
+</tr>
+</tbody></table>
+<p>端口转发相当于把小区的一扇门直接指向家里某个房间，因此不懂用途时不要随便开放端口。</p>
+<h3 id="dns把域名翻译成-ip">DNS：把域名翻译成 IP</h3>
+<p>人容易记住 <code>www.example.com</code>，电脑更需要服务器的 IP 地址。DNS 就像互联网的电话簿：</p>
+<pre><code class="language-text">www.example.com
+        │
+        ▼
+DNS 查询域名对应的 IP
+        │
+        ▼
+浏览器连接服务器
+</code></pre>
+<h3 id="路由器和网络安全">路由器和网络安全</h3>
+<p>家用路由器通常同时承担 Wi-Fi、DHCP、网关、NAT 和防火墙等工作。DHCP 会自动给设备分配 IP、子网掩码、网关和 DNS。</p>
+<p>网络安全可以用“房屋安全”理解：密码是钥匙，防火墙是门卫，HTTPS 是密封的信封，系统更新是在修补门锁漏洞。</p>
+<p>最重要的习惯是：使用 WPA2 或 WPA3、设置强密码、为重要账号开启双因素认证、及时更新设备，不随便打开陌生链接，也不要在不清楚用途时开启端口转发。</p>
+<h2 id="第二次提问ping-1111-在做什么">第二次提问：ping 1.1.1.1 在做什么</h2>
+<pre><code class="language-powershell">ping 1.1.1.1
+</code></pre>
+<p>这条命令会向公网中的 <code>1.1.1.1</code> 发送一个很小的测试请求，等待对方回应，用来检查电脑能否经过路由器到达互联网中的某个公网地址。</p>
+<p><code>1.1.1.1</code> 是 Cloudflare 提供的公网地址，也常被用作 DNS 服务地址。但在 <code>ping</code> 命令中，它只是一个测试目标，并不是在进行 DNS 查询。</p>
+<p>常见返回结果中的：</p>
+<ul>
+<li><code>时间=35ms</code>：一次来回大约需要 35 毫秒，数值越小通常越快；</li>
+<li><code>0% 丢失</code>：测试数据包全部收到回复；</li>
+<li><code>请求超时</code>：可能是网络不通，也可能是对方禁止 ICMP ping，不能只凭这一项断定网页一定打不开。</li>
+</ul>
+<p>可以先测试本地网关，再测试公网：</p>
+<pre><code class="language-powershell">ping 192.168.10.1
+ping 1.1.1.1
+</code></pre>
+<p>第一个主要检查电脑到路由器，第二个主要检查路由器之外的网络。</p>
+<h2 id="第三次提问nslookup-与-dns-地址">第三次提问：nslookup 与 DNS 地址</h2>
+<pre><code class="language-powershell">nslookup example.com
+</code></pre>
+<p>这个命令是询问 DNS：“<code>example.com</code> 对应哪些 IP 地址？”输出中的：</p>
+<pre><code class="language-text">Server:  192.168.1.1
+Address: 192.168.1.1
+</code></pre>
+<p>表示本次查询使用的 DNS 服务器是 <code>192.168.1.1</code>。它不一定就是默认网关，可能来自路由器、网络软件、VPN 或手动配置。</p>
+<pre><code class="language-text">Name:    example.com
+Addresses: 2606:4700:10::6814:179a
+           2606:4700:10::ac42:93f3
+           172.66.147.243
+           104.20.23.154
+</code></pre>
+<p>这里的 <code>Addresses</code> 是域名对应的服务器地址。带冒号、较长的地址是 IPv6；四段数字组成的地址是 IPv4。一个域名有多个地址，可以用于分担访问压力、提高可靠性，并同时支持 IPv4 和 IPv6。</p>
+<p><code>Non-authoritative answer</code> 表示 <code>192.168.1.1</code> 不是 <code>example.com</code> 的官方权威 DNS，只是替你查询或从缓存中返回结果，这通常是正常现象。</p>
+<p><code>example.com</code> 是专门保留给教程和文档使用的示例域名，不是专门的 DNS 测试网站，但很适合用来测试 DNS 是否能够解析域名。</p>
+<h2 id="第四次提问mac-地址与-wi-fi-配置">第四次提问：MAC 地址与 Wi-Fi 配置</h2>
+<h3 id="mac-地址网卡的硬件身份证">MAC 地址：网卡的硬件身份证</h3>
+<p>MAC 地址通常长这样：</p>
+<pre><code class="language-text">AA:BB:CC:11:22:33
+</code></pre>
+<p>它是网卡在局域网中的硬件标识。可以这样区分：</p>
+<pre><code class="language-text">MAC 地址 = 网卡的身份证
+IP 地址  = 设备当前在网络中的住址
+</code></pre>
+<p>设备换到另一个 Wi-Fi 后，IP 地址通常会改变；MAC 地址通常保持不变，但 Windows 可以使用随机硬件地址来保护隐私。</p>
+<h3 id="随机硬件地址给不同-wi-fi-使用不同的临时-mac">随机硬件地址：给不同 Wi-Fi 使用不同的临时 MAC</h3>
+<p>开启后，电脑连接不同 Wi-Fi 时，可以使用不同的随机 MAC 地址，减少公共 Wi-Fi 通过 MAC 地址长期识别和追踪同一台设备的可能性。</p>
+<p>普通家庭、学校和咖啡店 Wi-Fi 通常建议开启。但如果网络使用 MAC 白名单、固定 IP、设备限速或特殊认证，随机 MAC 变化后可能被当成新设备，需要重新配置。</p>
+<h3 id="ip-分配自动dhcp">IP 分配：自动（DHCP）</h3>
+<p>Wi-Fi 设置中的“IP 分配：自动（DHCP）”表示由路由器自动提供：</p>
+<pre><code class="language-text">IP 地址
+子网掩码
+默认网关
+DNS 服务器
+</code></pre>
+<p>普通家庭用户建议保持自动。只有搭建服务器、配置打印机、做虚拟机实验或网络明确要求固定地址时，才考虑手动设置 IP。</p>
+<h3 id="dns-服务器分配自动dhcp">DNS 服务器分配：自动（DHCP）</h3>
+<p>“DNS 服务器分配：自动（DHCP）”表示由路由器告诉电脑使用哪个 DNS。手动填写 DNS 可以用于排查 DNS 故障或使用指定的 DNS 服务，但更换 DNS 不会直接让所有网络速度变快。</p>
+<p>最后可以用四句话记住本篇内容：</p>
+<pre><code class="language-text">IP 地址   = 找到哪一台设备
+端口      = 找到设备里的哪一个服务
+网关      = 通往外部网络的出口
+DNS       = 把域名翻译成 IP
+MAC 地址  = 网卡的硬件身份证
+</code></pre>
+2:["$","div",null,{"className":"PostDetail_pageLayout__5uM1J","children":[["$","$La",null,{"content":"$b"}],["$","article",null,{"className":"PostDetail_container__Z8_ZL","children":[["$","$L8",null,{"href":"/","className":"PostDetail_backLink___eazR","children":"← 返回首页"}],["$","div",null,{"className":"PostDetail_header__C2cUQ","children":[["$","div",null,{"className":"PostDetail_meta__2qpY2","children":[["$","time",null,{"className":"PostDetail_date__jgVbX","children":"2026-08-28"}],["$","$L8",null,{"href":"/categories/%E5%AD%A6%E4%B9%A0","className":"PostDetail_category__Npi0s","children":"学习"}]]}],["$","h1",null,{"className":"PostDetail_title__qQKeB","children":"计算机网络入门"}],["$","div",null,{"className":"PostDetail_divider__mbBrX"}]]}],["$","$Lc",null,{"selector":"[data-anim-content] > *","children":["$","div",null,{"className":"PostDetail_content__qxOt7","data-anim-content":true,"dangerouslySetInnerHTML":{"__html":"$d"}}]}],["$","div",null,{"className":"PostDetail_tags__rxApn","children":[["$","span","计算机网络",{"className":"PostDetail_tag__8k22N","children":["#","计算机网络"]}],["$","span","网络基础",{"className":"PostDetail_tag__8k22N","children":["#","网络基础"]}],["$","span","IP",{"className":"PostDetail_tag__8k22N","children":["#","IP"]}],["$","span","DNS",{"className":"PostDetail_tag__8k22N","children":["#","DNS"]}],["$","span","路由器",{"className":"PostDetail_tag__8k22N","children":["#","路由器"]}]]}],["$","$Le",null,{}]]}]]}]
+9:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"计算机网络入门 | RINのblog"}],["$","meta","3",{"name":"description","content":"从 IP、网关、端口开始，用生活中的地址、道路和房间理解计算机网络。"}],["$","link","4",{"rel":"icon","href":"/my-blog/favicon.ico"}],["$","link","5",{"rel":"apple-touch-icon","href":"/my-blog/apple-touch-icon.png"}]]
+1:null
