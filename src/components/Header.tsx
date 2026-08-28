@@ -9,6 +9,7 @@ const navItems = [
   { href: '/', label: '首页' },
   { href: '/categories', label: '分类' },
   { href: '/search', label: '搜索' },
+  { href: '/learning', label: '学习' },
   { href: '/about', label: '关于' },
 ];
 
