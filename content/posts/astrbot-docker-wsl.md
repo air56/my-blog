@@ -290,6 +290,11 @@ docker info
 
 确认 Docker Desktop 版本支持 Compose，并重新打开 WSL Shell。不要把 `docker-compose` 和新版 `docker compose` 当成完全相同的命令，优先使用官方当前文档中的 `docker compose`。
 
+### WSL 启动时提示 `ext4.vhdx` 拒绝访问
+
+2026 年 8 月 29 日，执行 `wsl -d Ubuntu` 时连续遇到 `E_ACCESSDENIED` 错误，提示无法将 `E:\WSL\Ubuntu\ext4.vhdx` 附加到 WSL2。这个文件是 Ubuntu WSL2 使用的虚拟磁盘；稍后再次执行相同命令时又恢复正常，并成功进入 WSL Shell。这说明问题更可能是虚拟磁盘被其他进程临时占用，或 WSL、Hyper-V 相关服务在系统启动、睡眠唤醒过程中暂时处于异常状态，不一定代表 Ubuntu 数据损坏。
+
+遇到类似问题时，可以先在 Windows PowerShell 中执行 `wsl --shutdown`，再重新运行 `wsl -d Ubuntu`；同时检查 `E:` 盘是否正常、`E:\WSL\Ubuntu\ext4.vhdx` 是否存在，以及 Docker、杀毒软件或备份软件是否正在占用该文件。如果需要启动 Docker Desktop，也要先确认 `Docker Desktop.exe` 的实际安装路径；本次 `Start-Process "$Env:ProgramFiles\Docker\Docker\Docker Desktop.exe"` 报错，是因为指定路径不存在，与 WSL 后续恢复正常属于两个独立问题。
 ### 6185 端口被占用
 
 ```bash
