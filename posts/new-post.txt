@@ -1,0 +1,53 @@
+3:I[4707,[],""]
+5:I[6423,[],""]
+6:I[279,["972","static/chunks/972-c020e7f518b751dc.js","185","static/chunks/app/layout-78a19bbca5d8b12c.js"],"default"]
+7:I[9295,["972","static/chunks/972-c020e7f518b751dc.js","185","static/chunks/app/layout-78a19bbca5d8b12c.js"],"default"]
+8:I[2972,["972","static/chunks/972-c020e7f518b751dc.js","333","static/chunks/app/posts/%5Bslug%5D/page-b004d32e83dc278a.js"],""]
+4:["slug","new-post","d"]
+0:["ax5UtPwcvlgrWg2M-KTgD",[[["",{"children":["posts",{"children":[["slug","new-post","d"],{"children":["__PAGE__?{\"slug\":\"new-post\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["posts",{"children":[["slug","new-post","d"],{"children":["__PAGE__",{},[["$L1","$L2",[["$","link","0",{"rel":"stylesheet","href":"/my-blog/_next/static/css/9c279144fe2b1981.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children","posts","children","$4","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children","posts","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/my-blog/_next/static/css/ca166833eeb77d96.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"zh-CN","children":["$","body",null,{"children":["$","$L6",null,{"children":[["$","$L7",null,{}],["$","main",null,{"style":{"minHeight":"calc(100vh - var(--header-height))","paddingTop":"var(--header-height)"},"children":["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":["$","div",null,{"style":{"display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center","minHeight":"60vh","textAlign":"center","padding":"2rem"},"children":[["$","style",null,{"children":"\n        .not-found-btn {\n          display: inline-block;\n          padding: 0.75rem 2rem;\n          border: 1px solid var(--accent-yellow);\n          color: var(--accent-yellow);\n          font-size: 0.875rem;\n          letter-spacing: 0.05em;\n          transition: all 0.3s ease;\n        }\n        .not-found-btn:hover {\n          background: var(--accent-yellow) !important;\n          color: #000 !important;\n        }\n      "}],["$","div",null,{"style":{"fontSize":"5rem","fontWeight":700,"fontFamily":"var(--font-display)","color":"var(--accent-yellow)","lineHeight":1,"marginBottom":"1rem"},"children":"404"}],["$","div",null,{"className":"section-divider","style":{"maxWidth":"200px","margin":"0 auto 1.5rem"}}],["$","p",null,{"style":{"color":"var(--text-secondary)","marginBottom":"2rem","fontSize":"1rem"},"children":"页面未找到"}],["$","$L8",null,{"href":"/","className":"not-found-btn","children":"返回首页"}]]}],"notFoundStyles":[]}]}],["$","footer",null,{"className":"Footer_footer__JrJN9","children":["$","div",null,{"className":"Footer_inner__QTh9n","children":[["$","span",null,{"className":"Footer_copy__fxI_X","children":["© ",2026," RINのblog. All rights reserved."]}],["$","div",null,{"className":"Footer_links__g0H7R","children":["$","a",null,{"href":"https://github.com","target":"_blank","rel":"noopener noreferrer","className":"Footer_link__ZIL7i","children":"GitHub"}]}]]}]}]]}]}]}]],null],null],["$L9",null]]]]
+a:I[1100,["972","static/chunks/972-c020e7f518b751dc.js","333","static/chunks/app/posts/%5Bslug%5D/page-b004d32e83dc278a.js"],"default"]
+b:I[1321,["972","static/chunks/972-c020e7f518b751dc.js","333","static/chunks/app/posts/%5Bslug%5D/page-b004d32e83dc278a.js"],"default"]
+d:I[9917,["972","static/chunks/972-c020e7f518b751dc.js","333","static/chunks/app/posts/%5Bslug%5D/page-b004d32e83dc278a.js"],"default"]
+c:T89c,<h2 id="ai学习经历">ai学习经历</h2>
+<p>最近换用了cc switch代理deepseekv4接入claude code cli，深刻感觉到ai的发展之快。
+###24年末
+获好友指导得以翻墙后，先是在接触gpt，grok等移动端服务ai。
+###25年6月高考结束
+有了往ai方向学习的想法，脑子一热想搞本地部署跑ai（然而此时无知的我对学习的方向并没有一个系统的认知），
+就搞起了外接显卡，整了个16g显存的5060ti ，装了<em>ollama</em>跑<em>gpt-oss 20b</em>，后面又开始玩stable difussion学ai生图（依旧三分钟热度）
+这段期间主要其实是在给我打计算机基础，跟着教程给电脑配置<em>node.js</em>和<em>python</em>环境变量，解决一些折腾过程中遇到的软件问题，
+然后搞外接学习电脑硬件，顺便学习了电脑桌面美化，然后浑浑噩噩度过这段长假。
+###25年11月
+经过一段时间的c语言学习并通过入门测试后，我进入了实验室，开始学stm32单片机，由于单片机代码较复杂，开始由原先的问ai怎么做，到开始想办法让ai写代码了。
+适逢<em>Gemini3.0</em>出世，nano banana全网刷屏后我也理所当然了解到了谷歌的ai，然后入门了<em>google ai studio</em>，确实给了我不小的震撼。
+审美在线的ui界面和优秀的代码能力，而且还能根据需求生成图形化交互内容（写作业和学高数比较方便），当时直接成为我的新宠。</p>
+<p>##为什么选择终末地的美术风格</p>
+<p><strong>加粗文字</strong> 和 <em>斜体文字</em>。</p>
+<h3 id="三级标题">三级标题</h3>
+<ul>
+<li>无序列表项 1</li>
+<li>无序列表项 2</li>
+<li>无序列表项 3</li>
+</ul>
+<ol>
+<li>有序列表项</li>
+<li>有序列表项</li>
+<li>有序列表项</li>
+</ol>
+<blockquote>
+<p>引用块内容</p>
+</blockquote>
+<p><code>行内代码</code></p>
+<pre><code>代码块
+function hello() {
+  console.log(&quot;Hello World&quot;);
+}
+</code></pre>
+<p><a href="https://example.com">链接文字</a></p>
+<p><img src="/my-blog/images/your-image.jpg" alt="图片描述"></p>
+<hr>
+<h2 id="另一个章节">另一个章节</h2>
+<p>继续写正文内容。</p>
+2:["$","div",null,{"className":"PostDetail_pageLayout__5uM1J","children":[["$","$La",null,{"content":"\n## ai学习经历\n最近换用了cc switch代理deepseekv4接入claude code cli，深刻感觉到ai的发展之快。\n###24年末\n获好友指导得以翻墙后，先是在接触gpt，grok等移动端服务ai。\n###25年6月高考结束\n有了往ai方向学习的想法，脑子一热想搞本地部署跑ai（然而此时无知的我对学习的方向并没有一个系统的认知），\n就搞起了外接显卡，整了个16g显存的5060ti ，装了*ollama*跑*gpt-oss 20b*，后面又开始玩stable difussion学ai生图（依旧三分钟热度）\n这段期间主要其实是在给我打计算机基础，跟着教程给电脑配置*node.js*和*python*环境变量，解决一些折腾过程中遇到的软件问题，\n然后搞外接学习电脑硬件，顺便学习了电脑桌面美化，然后浑浑噩噩度过这段长假。\n###25年11月\n经过一段时间的c语言学习并通过入门测试后，我进入了实验室，开始学stm32单片机，由于单片机代码较复杂，开始由原先的问ai怎么做，到开始想办法让ai写代码了。\n适逢*Gemini3.0*出世，nano banana全网刷屏后我也理所当然了解到了谷歌的ai，然后入门了*google ai studio*，确实给了我不小的震撼。\n审美在线的ui界面和优秀的代码能力，而且还能根据需求生成图形化交互内容（写作业和学高数比较方便），当时直接成为我的新宠。\n\n\n##为什么选择终末地的美术风格\n\n\n\n\n\n**加粗文字** 和 *斜体文字*。\n\n### 三级标题\n\n- 无序列表项 1\n- 无序列表项 2\n- 无序列表项 3\n\n1. 有序列表项\n2. 有序列表项\n3. 有序列表项\n\n> 引用块内容\n\n`行内代码`\n\n```\n代码块\nfunction hello() {\n  console.log(\"Hello World\");\n}\n```\n\n[链接文字](https://example.com)\n\n![图片描述](/my-blog/images/your-image.jpg)\n\n---\n\n## 另一个章节\n\n继续写正文内容。\n"}],["$","article",null,{"className":"PostDetail_container__Z8_ZL","children":[["$","$L8",null,{"href":"/","className":"PostDetail_backLink___eazR","children":"← 返回首页"}],["$","div",null,{"className":"PostDetail_header__C2cUQ","children":[["$","div",null,{"className":"PostDetail_meta__2qpY2","children":[["$","time",null,{"className":"PostDetail_date__jgVbX","children":"2026-05-23"}],["$","$L8",null,{"href":"/categories/%E9%9A%8F%E7%AC%94","className":"PostDetail_category__Npi0s","children":"随笔"}]]}],["$","h1",null,{"className":"PostDetail_title__qQKeB","children":"第一次写markdown"}],["$","div",null,{"className":"PostDetail_divider__mbBrX"}]]}],["$","$Lb",null,{"selector":"[data-anim-content] > *","children":["$","div",null,{"className":"PostDetail_content__qxOt7","data-anim-content":true,"dangerouslySetInnerHTML":{"__html":"$c"}}]}],["$","div",null,{"className":"PostDetail_tags__rxApn","children":[["$","span","开端",{"className":"PostDetail_tag__8k22N","children":["#","开端"]}],["$","span","闲聊",{"className":"PostDetail_tag__8k22N","children":["#","闲聊"]}]]}],["$","$Ld",null,{}]]}]]}]
+9:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"第一次写markdown | RINのblog"}],["$","meta","3",{"name":"description","content":"不想发朋友圈什么的，就在这个小世界记录自己"}],["$","link","4",{"rel":"icon","href":"/my-blog/favicon.ico"}],["$","link","5",{"rel":"apple-touch-icon","href":"/my-blog/apple-touch-icon.png"}]]
+1:null
