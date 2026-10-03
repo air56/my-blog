@@ -123,7 +123,31 @@ Bridge 恢复 —— 重新建立事件连接
 <pre><code class="language-text">%LocalAppData%\NeteaseLyricsBridge\bridge.stdout.log
 %LocalAppData%\NeteaseLyricsBridge\bridge.stderr.log
 </code></pre>
-<h2 id="测试和验证">测试和验证</h2>
+<h2 id="lyrics-bridge-的启动与关闭">Lyrics Bridge 的启动与关闭</h2><p>歌词组件通过本机 Lyrics Bridge 读取网易云当前播放歌曲、播放状态、播放进度和歌词。使用组件前，请先启动 Bridge；关闭 Bridge 后，组件将无法继续获取实时歌词数据。</p><h3 id="启动-bridge">启动 Bridge</h3><p>在 PowerShell 中进入项目目录，然后运行启动脚本：</p><pre><code class="language-powershell">cd "你的项目目录"
+.\scripts\run-bridge.ps1</code></pre><p>如果使用本项目的默认开发目录，可以运行：</p><pre><code class="language-powershell">cd "C:\Users\lenovo\Documents\ChatGPT\sapphire组件开发\.worktrees\netease-lyrics-swidget"
+.\scripts\run-bridge.ps1</code></pre><p>启动成功后，Bridge 默认监听：</p><pre><code>http://127.0.0.1:18763</code></pre><p>检查服务：</p><pre><code class="language-powershell">Invoke-RestMethod http://127.0.0.1:18763/v1/snapshot |
+  ConvertTo-Json -Depth 10</code></pre><p>实时观察播放状态和 <code>positionMs</code>：</p><pre><code class="language-powershell">while ($true) {
+  $p = Invoke-RestMethod http://127.0.0.1:18763/v1/snapshot
+  "{0} | state={1} | positionMs={2}" -f     (Get-Date -Format "HH:mm:ss.fff"),
+    $p.playback.state,
+    $p.playback.positionMs
+  Start-Sleep -Milliseconds 500
+}</code></pre><h3 id="关闭-bridge">关闭 Bridge</h3><p>前台运行时按：</p><pre><code>Ctrl + C</code></pre><p>由开机自启任务启动时，停止当前实例：</p><pre><code class="language-powershell">Stop-ScheduledTask -TaskName NeteaseLyricsBridge</code></pre><p>如有残留进程：</p><pre><code class="language-powershell">Get-CimInstance Win32_Process |
+  Where-Object {
+    $_.CommandLine -match 'NeteaseLyricsBridge|run-bridge|start-bridge'
+  } |
+  ForEach-Object {
+    Stop-Process -Id $_.ProcessId -Force
+  }</code></pre><p>禁止或恢复开机自启：</p><pre><code class="language-powershell">Disable-ScheduledTask -TaskName NeteaseLyricsBridge
+
+# 恢复开机自启
+Enable-ScheduledTask -TaskName NeteaseLyricsBridge
+Start-ScheduledTask -TaskName NeteaseLyricsBridge</code></pre><p>验证是否已关闭：</p><pre><code class="language-powershell">try {
+  Invoke-RestMethod http://127.0.0.1:18763/v1/snapshot
+  "Bridge 仍在运行"
+} catch {
+  "Bridge 已关闭"
+}</code></pre><blockquote><p>停止或禁用 Bridge 后，Sapphire 歌词组件不会显示实时歌词；重新使用组件前，请先启动 Bridge。</p></blockquote><h2 id="测试和验证">测试和验证</h2>
 <p>本次开发采用了单元测试、契约测试和构建测试结合的方式。</p>
 <p>前端和组件测试覆盖：</p>
 <ul>

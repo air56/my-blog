@@ -190,6 +190,102 @@ Bridge 的日志位置：
 %LocalAppData%\NeteaseLyricsBridge\bridge.stderr.log
 ```
 
+
+## Lyrics Bridge 的启动与关闭
+
+歌词组件通过本机 Lyrics Bridge 读取网易云当前播放歌曲、播放状态、播放进度和歌词。使用组件前，请先启动 Bridge；关闭 Bridge 后，组件将无法继续获取实时歌词数据。
+
+### 启动 Bridge
+
+在 PowerShell 中进入项目目录，然后运行启动脚本：
+
+```powershell
+cd "你的项目目录"
+.\scripts\run-bridge.ps1
+```
+
+如果使用本项目的默认开发目录，可以运行：
+
+```powershell
+cd "C:\Users\lenovo\Documents\ChatGPT\sapphire组件开发\.worktrees\netease-lyrics-swidget"
+.\scripts\run-bridge.ps1
+```
+
+启动成功后，Bridge 默认监听：
+
+```
+http://127.0.0.1:18763
+```
+
+可以用下面的命令检查服务和当前播放快照：
+
+```powershell
+Invoke-RestMethod http://127.0.0.1:18763/v1/snapshot |
+  ConvertTo-Json -Depth 10
+```
+
+如果 Bridge 在前台 PowerShell 窗口中运行，保持该窗口打开即可。需要实时观察播放状态和 `positionMs` 时，可以执行：
+
+```powershell
+while ($true) {
+  $p = Invoke-RestMethod http://127.0.0.1:18763/v1/snapshot
+  "{0} | state={1} | positionMs={2}" -f `
+    (Get-Date -Format "HH:mm:ss.fff"),
+    $p.playback.state,
+    $p.playback.positionMs
+  Start-Sleep -Milliseconds 500
+}
+```
+
+### 关闭 Bridge
+
+如果 Bridge 在当前 PowerShell 窗口中运行，按：
+
+```
+Ctrl + C
+```
+
+如果 Bridge 由开机自启任务启动，停止当前实例：
+
+```powershell
+Stop-ScheduledTask -TaskName NeteaseLyricsBridge
+```
+
+如果还存在残留进程，可以执行：
+
+```powershell
+Get-CimInstance Win32_Process |
+  Where-Object {
+    $_.CommandLine -match 'NeteaseLyricsBridge|run-bridge|start-bridge'
+  } |
+  ForEach-Object {
+    Stop-Process -Id $_.ProcessId -Force
+  }
+```
+
+只想禁止下次登录时自动启动，可以禁用任务；之后可随时恢复：
+
+```powershell
+Disable-ScheduledTask -TaskName NeteaseLyricsBridge
+
+# 恢复开机自启
+Enable-ScheduledTask -TaskName NeteaseLyricsBridge
+Start-ScheduledTask -TaskName NeteaseLyricsBridge
+```
+
+关闭后，可以用下面的命令验证端口是否已经停止监听：
+
+```powershell
+try {
+  Invoke-RestMethod http://127.0.0.1:18763/v1/snapshot
+  "Bridge 仍在运行"
+} catch {
+  "Bridge 已关闭"
+}
+```
+
+> 注意：停止或禁用 Bridge 后，Sapphire 歌词组件不会显示实时歌词；重新使用组件前，请先启动 Bridge。
+
 ## 测试和验证
 
 本次开发采用了单元测试、契约测试和构建测试结合的方式。
