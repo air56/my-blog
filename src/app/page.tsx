@@ -1,6 +1,7 @@
 import { getAllPosts, getAllCategories } from '@/lib/posts';
 import PostCard from '@/components/PostCard';
 import HeroLoader from '@/components/HeroLoader';
+import HeroScene from '@/components/HeroScene';
 import styles from './page.module.css';
 
 export default function HomePage() {
@@ -12,10 +13,7 @@ export default function HomePage() {
       {/* Hero */}
       <HeroLoader>
         <section className={styles.hero}>
-          <div
-            className={styles.heroImage}
-            style={{ backgroundImage: 'url("/my-blog/images/hero-bg.jpg")' }}
-          />
+          <HeroScene />
           <div className={styles.heroOverlay} />
           <div className={styles.heroContent}>
             <div className={styles.heroBadge}>✦ 随笔 · 记录 · 思考</div>

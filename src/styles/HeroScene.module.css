@@ -1,0 +1,80 @@
+.scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  --pointer-x: 0px;
+  --pointer-y: 0px;
+}
+
+.imageFrame {
+  position: absolute;
+  /* Extra image coverage prevents blank edges during parallax. */
+  inset: -20px;
+  transform: translate3d(var(--pointer-x), var(--pointer-y), 0);
+}
+
+.image {
+  position: absolute;
+  inset: 0;
+  background: #000 url('/my-blog/images/hero-bg.jpg') 30% center / cover no-repeat;
+  transform-origin: 35% 45%;
+  animation: breathe 24s ease-in-out infinite;
+  animation-play-state: paused;
+}
+
+.ambient {
+  position: absolute;
+  inset: -8%;
+  background:
+    radial-gradient(ellipse at 24% 28%, rgba(255, 235, 182, 0.24), transparent 48%),
+    radial-gradient(ellipse at 58% 66%, rgba(162, 210, 255, 0.16), transparent 45%);
+  mix-blend-mode: screen;
+  opacity: 0.35;
+  animation: lightDrift 18s ease-in-out infinite alternate;
+  animation-play-state: paused;
+}
+
+.particles {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* Keep light specks subtle behind the right-aligned text. */
+  mask-image: linear-gradient(90deg, #000 0%, #000 48%, rgba(0, 0, 0, 0.3) 100%);
+}
+
+.scene[data-motion='active'] .image,
+.scene[data-motion='active'] .ambient {
+  animation-play-state: running;
+}
+
+.scene[data-motion='active'] .imageFrame,
+.scene[data-motion='active'] .image {
+  will-change: transform;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.035); }
+}
+
+@keyframes lightDrift {
+  from { opacity: 0.25; transform: translate3d(-1%, 0, 0); }
+  to { opacity: 0.6; transform: translate3d(1%, -1%, 0); }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .imageFrame { transform: none; }
+}
+
+@media (max-width: 768px) {
+  .ambient { opacity: 0.25; }
+  .particles { opacity: 0.75; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .imageFrame { inset: 0; transform: none; }
+  .image, .ambient { animation: none; }
+  .particles { visibility: hidden; }
+}

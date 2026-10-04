@@ -11,15 +11,6 @@
   background: #000;
 }
 
-.heroImage {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: 30% center;
-  background-color: #000;
-}
-
 .heroOverlay {
   position: absolute;
   inset: 0;
@@ -138,6 +129,10 @@
 @keyframes bounce {
   0%, 100% { transform: translateX(-50%) translateY(0); }
   50% { transform: translateX(-50%) translateY(10px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scrollIndicator { animation: none; }
 }
 
 /* Posts section */
