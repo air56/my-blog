@@ -47,12 +47,20 @@
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   padding: var(--space-xl);
-  transition: all var(--transition-normal);
+  transition: background 220ms ease, border-color 220ms ease, transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.categoryCard:hover {
+.categoryCard:hover, .categoryCard:focus-visible {
   background: var(--bg-card-hover);
   border-color: var(--accent-yellow);
+  transform: translateY(-3px);
+}
+
+@media (prefers-reduced-motion: reduce), (hover: none) {
+  .categoryCard:hover, .categoryCard:focus-visible { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .categoryCard { transition: none; }
 }
 
 .categoryName {

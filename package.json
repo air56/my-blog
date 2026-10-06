@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test:markdown": "node --no-warnings --experimental-strip-types --test scripts/markdown-render.test.mjs"
+    "test:markdown": "node --no-warnings --experimental-strip-types --test scripts/markdown-render.test.mjs",
+    "test:motion": "node --test scripts/route-motion.test.mjs scripts/theme-navigation.test.mjs"
   },
   "dependencies": {
     "fuse.js": "^7.0.0",

@@ -22,7 +22,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="zh-CN">
+    <html lang="zh-CN" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `try{document.documentElement.dataset.theme=localStorage.getItem('rin-theme')==='light'?'light':'dark'}catch{}` }} />
+      </head>
       <body>
         <TransitionProvider>
           <Header />

@@ -1,8 +1,14 @@
+const { PHASE_DEVELOPMENT_SERVER } = require('next/constants');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
   basePath: '/my-blog',
   images: { unoptimized: true },
 };
 
-module.exports = nextConfig;
+// Next 14's dev export check compares encoded Chinese routes to decoded params.
+// Static export is only needed for the production GitHub Pages build.
+module.exports = (phase) => ({
+  ...nextConfig,
+  ...(phase === PHASE_DEVELOPMENT_SERVER ? {} : { output: 'export' }),
+});

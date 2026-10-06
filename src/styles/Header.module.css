@@ -13,7 +13,12 @@
 }
 
 .headerScrolled {
-  background: rgba(0, 0, 0, 0.9);
+  background: var(--header-background);
+  border-bottom-color: var(--border-color);
+}
+
+:global(html[data-theme='light']) .header {
+  background: var(--header-background);
   border-bottom-color: var(--border-color);
 }
 
@@ -25,6 +30,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 28px;
 }
 
 .logo {
@@ -34,6 +40,8 @@
   letter-spacing: 0.05em;
   color: var(--text-primary);
   text-transform: uppercase;
+  margin-right: auto;
+  white-space: nowrap;
   transition: color var(--transition-fast);
 }
 
@@ -46,6 +54,7 @@
 }
 
 .nav {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-xl);
@@ -60,31 +69,50 @@
   padding: var(--space-xs) 0;
 }
 
-.navLink::after {
+.navIndicator {
   content: '';
   position: absolute;
   bottom: -2px;
   left: 0;
-  width: 0;
   height: 2px;
   background: var(--accent-yellow);
-  transition: width var(--transition-normal);
+  pointer-events: none;
+  border-radius: 2px;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1), width 420ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms ease;
 }
 
 .navLink:hover {
   color: var(--text-primary);
 }
 
-.navLink:hover::after {
-  width: 100%;
-}
-
 .active {
   color: var(--text-primary);
 }
 
-.active::after {
-  width: 100%;
+.themeToggle {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: color 180ms ease, border-color 180ms ease, transform 260ms ease;
+}
+
+.themeToggle:hover { color: var(--accent-yellow); border-color: var(--accent-yellow); transform: rotate(15deg); }
+.themeToggle:active { transform: scale(0.94); }
+.themeIcon { width: 18px; height: 18px; }
+
+@media (max-width: 640px) {
+  .inner { display: grid; grid-template-columns: 1fr auto; gap: 0 16px; padding: 10px 20px 8px; }
+  .logo { font-size: 1.1rem; }
+  .themeToggle { grid-column: 2; grid-row: 1; width: 32px; height: 32px; }
+  .nav { grid-column: 1 / -1; grid-row: 2; justify-content: space-between; gap: 12px; align-self: end; }
+  .navLink { font-size: 0.8125rem; padding: 5px 2px; }
 }
 
 .progressTrack {
@@ -104,4 +132,9 @@
   transform-origin: left;
   transform: scaleX(0);
   transition: transform 0.1s linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navIndicator, .themeToggle, .header, .progressBar { transition: none; }
+  .themeToggle:hover, .themeToggle:active { transform: none; }
 }

@@ -14,7 +14,14 @@ const url = process.env.HERO_TEST_URL || 'http://127.0.0.1:3100/my-blog';
 
 async function waitForEntrance(page) {
   await page.getByRole('heading', { level: 1 }).waitFor({ state: 'visible' });
-  // The existing route and image loaders can cover otherwise visible text.
+  // Wait for hydration and the finite route entrance before sampling geometry.
+  // The hero background itself intentionally keeps animating.
+  await page.waitForFunction(() => ['active', 'reduced'].includes(
+    document.querySelector('[data-hero-scene]')?.dataset.motion
+  ));
+  await page.locator('main').evaluate(async (main) => {
+    await Promise.all(main.getAnimations().map((animation) => animation.finished.catch(() => {})));
+  });
   await page.waitForFunction(() => ![...document.querySelectorAll('[aria-hidden="true"]')].some((el) => {
     const style = getComputedStyle(el);
     return style.position === 'fixed' && Number(style.zIndex) >= 9999;

@@ -1,50 +1,78 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import styles from '@/styles/TransitionProvider.module.css';
 
 export default function TransitionProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [loading, setLoading] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [visible, setVisible] = useState(false);
+  const shellRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    setLoading(true);
-    setVisible(true);
-    setProgress(0);
+  useLayoutEffect(() => {
+    // Animate only the page: the fixed header and footer retain their own layout.
+    const content = shellRef.current?.querySelector<HTMLElement>(':scope > main');
+    if (!content || typeof content.animate !== 'function') return;
 
-    const t1 = setTimeout(() => setProgress(30), 40);
-    const t2 = setTimeout(() => setProgress(55), 150);
-    const t3 = setTimeout(() => setProgress(75), 300);
-    const t4 = setTimeout(() => setProgress(88), 450);
-    let t6: ReturnType<typeof setTimeout>;
-    const t5 = setTimeout(() => {
-      setProgress(100);
-      setLoading(false);
-      t6 = setTimeout(() => {
-        setVisible(false);
-      }, 380);
-    }, 650);
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let animation: Animation | undefined;
+    const cancelAnimation = () => {
+      animation?.cancel();
+      animation = undefined;
+    };
+
+    if (!reducedMotion.matches) {
+      animation = content.animate([
+        { opacity: 0, transform: 'translateY(12px)', filter: 'blur(3px)' },
+        { opacity: 1, transform: 'none', filter: 'blur(0px)' },
+      ], {
+        duration: 420,
+        easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+      });
+    }
+
+    const onClick = (event: MouseEvent) => {
+      if (reducedMotion.matches || event.defaultPrevented || event.button !== 0 ||
+          event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const link = event.target instanceof Element ? event.target.closest('a[href]') : null;
+      if (!(link instanceof HTMLAnchorElement) || link.hasAttribute('download') ||
+          (link.target && link.target.toLowerCase() !== '_self')) return;
+
+      let destination: URL;
+      try {
+        destination = new URL(link.href, window.location.href);
+      } catch {
+        return;
+      }
+      const currentPath = window.location.pathname.replace(/\/$/, '');
+      if (destination.origin !== window.location.origin ||
+          destination.pathname.replace(/\/$/, '') === currentPath) return;
+
+      cancelAnimation();
+      // This short pulse never delays routing or leaves a failed navigation hidden.
+      // No fill mode means the underlying readable styles always return on completion.
+      animation = content.animate([
+        { opacity: 1, transform: 'none', offset: 0 },
+        { opacity: 0.86, transform: 'translateY(-4px)', offset: 0.65 },
+        { opacity: 1, transform: 'none', offset: 1 },
+      ], { duration: 180, easing: 'ease-out' });
+    };
+
+    const onMotionPreference = () => {
+      if (reducedMotion.matches) cancelAnimation();
+    };
+    document.addEventListener('click', onClick, true);
+    reducedMotion.addEventListener('change', onMotionPreference);
 
     return () => {
-      clearTimeout(t1); clearTimeout(t2); clearTimeout(t3);
-      clearTimeout(t4); clearTimeout(t5); clearTimeout(t6);
+      cancelAnimation();
+      document.removeEventListener('click', onClick, true);
+      reducedMotion.removeEventListener('change', onMotionPreference);
     };
   }, [pathname]);
 
   return (
-    <>
-      {visible && (
-        <div aria-hidden="true" className={`${styles.overlay} ${!loading ? styles.fadeOut : ''}`}
-             style={{ pointerEvents: loading ? 'auto' : 'none' }}>
-          <div className={styles.barTrack}>
-            <div className={styles.bar} style={{ transform: `scaleX(${progress / 100})` }} />
-          </div>
-        </div>
-      )}
+    <div ref={shellRef} className={styles.shell}>
       {children}
-    </>
+    </div>
   );
 }
