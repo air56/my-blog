@@ -1,10 +1,221 @@
 2:I[5770,["972","static/chunks/972-d1c4a4acd65fc42a.js","521","static/chunks/521-52d257cb6e1a8e58.js","797","static/chunks/app/search/page-258c371814dee71d.js"],"default"]
-b:I[4707,[],""]
-c:I[6423,[],""]
-d:I[279,["972","static/chunks/972-d1c4a4acd65fc42a.js","185","static/chunks/app/layout-da31ff13d269a1d2.js"],"default"]
-e:I[4447,["972","static/chunks/972-d1c4a4acd65fc42a.js","185","static/chunks/app/layout-da31ff13d269a1d2.js"],"default"]
-f:I[2972,["972","static/chunks/972-d1c4a4acd65fc42a.js","931","static/chunks/app/page-dd8e72cadb502699.js"],""]
-3:T1dd6,
+c:I[4707,[],""]
+d:I[6423,[],""]
+e:I[279,["972","static/chunks/972-d1c4a4acd65fc42a.js","185","static/chunks/app/layout-da31ff13d269a1d2.js"],"default"]
+f:I[4447,["972","static/chunks/972-d1c4a4acd65fc42a.js","185","static/chunks/app/layout-da31ff13d269a1d2.js"],"default"]
+10:I[2972,["972","static/chunks/972-d1c4a4acd65fc42a.js","931","static/chunks/app/page-dd8e72cadb502699.js"],""]
+3:T265f,
+## 先检查：按顺序执行这些命令
+
+以下命令在 Windows PowerShell 中执行，命令与示例输出分开，代码块可直接复制。`15721` 是本次 CC Switch 的本地端口，其他环境按实际配置替换。
+
+**先定位故障发生在哪一段，再决定是否开启 Clash。**
+
+**1. 检查 Codex 前置网络。**
+
+```powershell
+codex doctor --json
+```
+
+重点查看 `network.provider_reachability`。本次失败时的关键信息如下，已摘录为文本：
+
+```text
+network.provider_reachability
+status: fail
+ChatGPT base URL: https://chatgpt.com/backend-api/
+request timed out
+```
+
+如果同时出现上述超时和 CC 无模型请求，先查 DNS、ChatGPT 网络路径、Clash/TUN 状态及节点可用性。`doctor` 和输出字段以实际 Codex 版本为准。
+
+**2. 检查 CC Switch 本地端口与监听进程。**
+
+```powershell
+Test-NetConnection 127.0.0.1 -Port 15721
+
+Get-NetTCPConnection -LocalPort 15721 -State Listen |
+    Format-Table LocalAddress, LocalPort, State, OwningProcess
+
+Get-NetTCPConnection -LocalPort 15721 -State Listen |
+    Select-Object -ExpandProperty OwningProcess -Unique |
+    ForEach-Object { Get-Process -Id $_ } |
+    Format-List Id, ProcessName, Path
+```
+
+端口连通时应看到 `TcpTestSucceeded : True`；再确认监听进程是 `cc-switch`。如果端口不通，先处理本地服务；端口连通只证明能建立 TCP 连接，不能证明上游可用。
+
+也可以用下面的命令查看监听 PID：
+
+```powershell
+netstat -ano | findstr :15721
+```
+
+**3. 检查 Codex 与 CC 是否已经建立连接。**
+
+```powershell
+Get-NetTCPConnection -State Established -ErrorAction SilentlyContinue |
+    Where-Object { $_.LocalPort -eq 15721 -or $_.RemotePort -eq 15721 } |
+    Format-Table LocalAddress, LocalPort, RemoteAddress, RemotePort, State, OwningProcess
+```
+
+本次曾看到如下两行，PID 和临时端口只是当时的示例：
+
+```text
+LocalAddress LocalPort RemoteAddress RemotePort State       OwningProcess
+127.0.0.1    55436     127.0.0.1     15721      Established 20616
+127.0.0.1    15721     127.0.0.1     55436      Established 29228
+```
+
+两行是同一条 TCP 连接的两端。核对 `OwningProcess` 后，才能确认连接的另一端是否属于 Codex。查询单个 PID 时，把数字替换成实际结果：
+
+```powershell
+Get-Process -Id 20616 | Format-List Id, ProcessName, Path
+```
+
+**Established 证明 TCP 通道存在，不代表某条模型请求已经成功。**
+
+**4. 前置网络失败时，再检查 DNS 与 443 端口。**
+
+```powershell
+Resolve-DnsName chatgpt.com -Type A
+Test-NetConnection chatgpt.com -Port 443
+```
+
+需要比较解析结果时，可指定当前网络中实际使用的 DNS 地址。下面两个地址来自本次记录，不适用于所有电脑：
+
+```powershell
+Resolve-DnsName chatgpt.com -Server 172.19.241.1 -Type A
+Resolve-DnsName chatgpt.com -Server 10.252.0.6 -Type A
+```
+
+记录每次测试的 Clash/TUN 状态。开启 TUN 后，测试可能已经经过代理路径，不能再把结果当作纯直连证据。
+
+**5. 如果返回本地接口的 502，转查 CC 到上游。**
+
+```text
+502 Bad Gateway
+http://127.0.0.1:15721/v1/responses
+```
+
+确认 `15721` 的监听者是 CC Switch 后，这个响应说明本地接口已经返回了 HTTP 错误，应重点查 CC 日志、供应商配置、认证、上游响应和出站网络。
+
+对照测试时保持供应商和登录方式一致，比较 Clash/TUN 开关前后的结果，再切换一个已知可用的供应商。如果只影响一个供应商，优先查该供应商及其网络路径；如果多个供应商都失败，优先查 CC 的共同出站路径。
+
+**本地接口返回 502 是排查方向，不是“TUN 一定有问题”的证明。**
+
+| 观察结果 | 优先检查 |
+|---|---|
+| Codex 超时，doctor 显示 backend-api 超时，CC 无模型请求 | ChatGPT 前置网络、DNS、代理路径 |
+| `127.0.0.1:15721` 无法建立 TCP 连接 | CC 本地服务、监听地址、端口配置 |
+| 本地连接存在，`/v1/responses` 返回 502 | CC 日志、上游配置、认证及出站网络 |
+
+## 当时恢复前置网络的 DNS/TUN 配置
+
+下面是当时使用的 DNS Mixin，保留原配置并补全 YAML 缩进和列表格式。适用于支持这些字段的 mihomo 内核；保存后检查客户端最终生效配置。
+
+```yaml
+dns:
+  enable: true
+  ipv6: false
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+
+  proxy-server-nameserver:
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+
+  nameserver:
+    - https://1.1.1.1/dns-query#RULES
+    - https://8.8.8.8/dns-query#RULES
+```
+
+`default-nameserver` 用于解析 DNS 服务器的域名；`proxy-server-nameserver` 用于代理节点域名；`nameserver` 用于默认域名查询。`#RULES` 表示 DoH 连接遵守路由规则，最终出口取决于规则。字段说明见 [mihomo DNS 文档](https://wiki.metacubex.one/config/dns/)。
+
+**`#RULES` 不等于强制走代理。**
+
+当时还在客户端开启了 TUN、gVisor、Auto Route、Auto Detect Interface，DNS Hijack 填入 `any:53`。对应配置片段如下；如果客户端通过界面管理这些字段，核对最终配置即可：
+
+```yaml
+tun:
+  enable: true
+  stack: gvisor
+  auto-route: true
+  auto-detect-interface: true
+  dns-hijack:
+    - any:53
+```
+
+`dns-hijack` 将匹配的 DNS 请求转入内置 DNS，`auto-route` 配置进入 TUN 的路由；具体支持情况见 [mihomo TUN 文档](https://wiki.metacubex.one/config/inbound/tun/)。这段记录使用的是当时的 gVisor 设置。
+
+**这是当时有效的配置记录，是否继续启用要看当前测试结果。**
+
+## 背景：为什么开关 Clash 会出现相反结果
+
+2026 年 10 月 8 日，Codex 通过 CC Switch 使用模型，先出现 `request timed out` 和连续重连。开启 Clash Mixin + TUN 后恢复；过一段时间，关闭 Clash 也能正常使用，重新开启却返回 502。
+
+把两次现象拆开看，故障点其实发生了变化。
+
+## 第一阶段：请求还没进入 CC，就在前置网络超时
+
+最初 CC 没有模型请求记录，但本地端口测试成功，监听 PID 对应 `cc-switch`。`doctor` 同时识别了 `cc-switch-official` Provider，并报告 ChatGPT backend-api 超时。
+
+当时的认证信息摘录为：
+
+```text
+stored API key: false
+stored ChatGPT tokens: true
+stored auth mode: chatgpt
+```
+
+这说明本次使用 ChatGPT 账号登录，即使配置了 CC Provider，仍存在 ChatGPT 相关前置网络访问。根据这些输出，故障定位在模型请求进入 CC 之前；具体内部调用顺序不能仅凭 doctor 完整还原。
+
+可以把本次观察简化为：
+
+```text
+Codex 的 ChatGPT 前置访问超时
+  → 模型请求未进入 CC Switch
+  → CC 无模型请求记录
+```
+
+DNS 查询前后曾返回 `128.242.240.85`、`108.160.169.46`、`66.220.148.145` 等可疑结果，同时 `chatgpt.com:443` 的 TCP 测试失败。这些现象支持“DNS 响应或网络路径异常”的怀疑，但没有抓包及可信解析对照，不能锁定 DNS 注入位置。
+
+**IP 变化本身不足以证明 DNS 污染；本次也没有证据证明电脑中毒。**
+
+开启 Mixin + TUN 后，`network.provider_reachability` 从 `fail` 变为 `ok`，Codex 开始回复，CC 出现模型请求。能够确认的是整组配置改变网络路径后恢复了访问，不能据此认定只有某一个 DNS 字段起作用。
+
+开启 fake-ip 后，如果解析得到配置范围内的 `198.18.x.x`，要先考虑它是内核分配的虚拟地址。不要把这类结果与关闭 TUN 时的可疑公网解析混为一谈；配置范围见 [mihomo DNS 文档](https://wiki.metacubex.one/config/dns/)。
+
+## 第二阶段：前置网络恢复，CC 却返回 502
+
+后来关闭 Clash 和 Mixin，API 登录、ChatGPT 账号登录都能回复。这表明此前的前置网络故障在测试时已经不再阻断访问，无法据此判断 DNS 异常永久消失。
+
+重新开启 Clash + Mixin + TUN 后，错误变成了本地 `/v1/responses` 的 `502 Bad Gateway`。此时监听者仍是 CC Switch，Codex 与 CC 之间也能看到已建立的 TCP 连接。
+
+**这时排查重点应从 Codex 前置网络转向 CC 的上游处理和出站路径。**
+
+TUN 可能接管 CC 自己访问供应商的流量，使原本可用的上游连接受到路由规则或代理节点影响。结合开关 TUN 的对照结果，这是本次较强的怀疑方向；具体是 DNS、TLS、节点、供应商拒绝还是其他错误，还需要 CC 与 Clash 日志确认。
+
+CC 没有新增完整会话，也不意味着它没收到请求。请求可能在上游连接阶段就失败，而统计在后续阶段才写入；这是可能的解释，实际写入时机需查看 CC 实现或日志。
+
+同样，发送消息前就看到 `Established` 也不奇怪。连接池、Keep-Alive 或预连接都可能保留 TCP 通道，不能把一条连接直接等同于一条新请求。
+
+## 总结：按故障层级选择网络路径
+
+| 阶段 | 已观察到的结果 | 处理与教训 |
+|---|---|---|
+| 最初超时 | backend-api 超时，本地 CC 端口正常，CC 无模型请求 | 先查前置网络；本次启用 Mixin + TUN 后恢复 |
+| 后来 502 | 关闭 Clash 可用，开启后本地接口返回 502 | 转查 CC 上游和出站路径，结合日志验证原因 |
+
+记录结束时，关闭 Clash/Mixin、保留 CC Switch 并使用账号登录可以正常回复，因此当时继续使用这条已验证可用的路径。
+
+**先看 doctor，再看本地端口和连接，最后看 CC 上游日志。**
+
+网络状态会变化，过去有效的开关组合不必永久保留。再次故障时重新定位，避免把“连续重连”或“没有会话统计”当成唯一依据。
+4:T1dd6,
 # 从歌词条到桌面组件：网易云双语歌词小组件的开发复盘
 
 最近为 Sapphire 开发了一个网易云音乐双语歌词小组件。它能够自动识别当前播放歌曲，获取网易云歌词，并以透明歌词层的形式显示原文、中文翻译和下一句歌词。
@@ -250,7 +461,7 @@ dotnet test .\NeteaseLyrics.sln --no-restore
 开发过程中最重要的收获是：桌面组件的难点通常不在单个功能，而在各种状态之间的衔接。播放暂停、切歌、网络失败、Bridge 重启和旧版运行环境，都需要在设计阶段提前考虑。
 
 最终版本更强调稳定、低干扰和可恢复性——歌词直接悬浮在桌面上，同时在异常发生后能够自动恢复到正常状态。
-4:T3541,
+5:T3541,
 这篇文章只解决一个问题：**以后忘记 AstrBot 怎么启动、怎么进管理面板、怎么查日志时，能快速照着做。**
 
 默认环境是 Windows + WSL2 + Docker Desktop，AstrBot 通过 Docker Compose 运行，项目目录假设为 `~/AstrBot`。
@@ -617,7 +828,7 @@ http://localhost:3000/my-blog
 - [AstrBot 常见问题](https://github.com/AstrBotDevs/AstrBot/blob/master/docs/zh/faq.md)
 
 这篇备忘录的核心顺序只有一条：**打开 Docker Desktop → 进入 WSL → `cd ~/AstrBot` → `docker compose up -d` → 看日志 → 打开 `6185` → 在聊天窗口输入 `/help`。**
-5:T1a5d,
+6:T1a5d,
 这是一篇根据一次网络基础学习对话整理的入门笔记。为了方便理解，把网络想象成一座城市：IP 是地址，网关是出口，端口是房间号，DNS 是电话簿。
 
 ## 第一次提问：IP、网关、端口与网络安全
@@ -808,7 +1019,7 @@ IP 地址   = 找到哪一台设备
 DNS       = 把域名翻译成 IP
 MAC 地址  = 网卡的硬件身份证
 ```
-6:T3850,
+7:T3850,
 ## 背景
 
 这次折腾的目标并不是单独安装一个 Ubuntu，而是搭建一套可以长期运行的个人 AI 机器人环境：
@@ -1407,7 +1618,7 @@ Windows
 ```
 
 先确认上一层正常，再继续检查下一层，通常比直接反复修改插件配置更快。
-7:T1514,
+8:T1514,
 ## 背景
 
 想在自己的 Telegram 里随时和 AI 对话。于是做了第一步：写一个 Telegram bot，用户发消息，bot 透传给 DeepSeek，把回答发回来。
@@ -1560,7 +1771,7 @@ if exist "%PID_FILE%" (
 | bat 变量在括号内失效 | 延迟展开 | Windows 批处理的老坑 |
 
 Telegram 接入 LLM 对话这条链路已经跑通：随时对话、开机自启、不依赖任何会话。真正让它稳定可用，靠的是这条链路**跑得稳**——开机自启、自动重连、单实例保护，再加上白名单做安全边界。
-8:T3c94,
+9:T3c94,
 这次电赛算是我作为大一新生第一次参加正式比赛，也因为赛制特别，给我留下了许多特别的回忆。在实验室的这四天三夜，非常疲惫，但也让我受益良多。（依旧是新手爱记录，老手已经开始录了）
 
 ## 1. 第一天
@@ -1684,7 +1895,7 @@ Telegram 接入 LLM 对话这条链路已经跑通：随时对话、开机自启
 代码地址：[github.com/air56/26h-ball-balance-control](https://github.com/air56/26h-ball-balance-control)
 
 （队友的视觉代码是仓库里的 maixcam2，硬件采用的也是 maixcam2）
-9:T85d,
+a:T85d,
 ## 背景
 
 每次让 Claude 帮忙写博客，都要在 prompt 里重复"精简一点""用表格总结""标题加冒号"。写上一篇 bug 修复 blog 时，第一版偏长，说了"精简一些"才缩到满意。
@@ -1735,7 +1946,7 @@ skill-creator 框架要求跑 with_skill vs without_skill 对照测试。设计�
 3. **审阅 + 推送一步走**：确认即发布，不用手动 git 操作
 
 这个 skill 已经内置在当前环境，直接说 **"把这次的修改写成博客"** 就会触发。
-a:T225b,
+b:T225b,
 ## 痛点
 
 Claude Code 每次要写文件、改代码或执行命令时，弹出一个英文的 `Allow this tool call? [yes/no]`。批还是不批？得仔细看参数才明白它要做什么。我想要的是：每次审批时自动附带一份**结构化的中文变更摘要**。
@@ -1931,6 +2142,6 @@ if (event === 'permissionrequest') {
 - **第三道**：修到 PermissionRequest 就以为到终点了，没继续探索 PreToolUse 的 `reason` 字段
 
 事后看每一步都"明显"，但当时没有任何可见反馈——hook 的 stdout 不直接展示给用户，出问题时完全黑盒。能定位全靠那行 debug log。**给以后写 hook 的自己：先加日志，不要相信"看起来能跑"。**
-0:["iZWYNslYY4fin6LsunUo3",[[["",{"children":["search",{"children":["__PAGE__",{}]}]},"$undefined","$undefined",true],["",{"children":["search",{"children":["__PAGE__",{},[["$L1",["$","$L2",null,{"posts":[{"slug":"netease-lyrics-swidget-development-review","title":"从歌词条到桌面组件：网易云双语歌词小组件的开发复盘","date":"2026-09-14","category":"技术","tags":["Sapphire","网易云音乐","Windows","前端组件","开发复盘"],"description":"记录网易云双语歌词 Sapphire 小组件从视觉设计、播放同步到 Bridge 自启动和兼容性修复的完整开发过程。","content":"$3"},{"slug":"astrbot-docker-wsl","title":"AstrBot Docker + WSL 使用备忘录","date":"2026-08-28","category":"学习","tags":["AstrBot","Docker","WSL","备忘录"],"description":"记录 Windows + WSL2 + Docker Desktop 部署 AstrBot 后的启动、管理、常用指令和故障排查流程。","content":"$4"},{"slug":"computer-network-basics","title":"计算机网络入门","date":"2026-08-28","category":"学习","tags":["计算机网络","网络基础","IP","DNS","路由器"],"description":"从 IP、网关、端口开始，用生活中的地址、道路和房间理解计算机网络。","content":"$5"},{"slug":"wsl-astrbot-bangumi","title":"从双系统到 AstrBot：WSL、Docker 与 Bangumi 番剧机器人的完整排坑记录","date":"2026-08-28","category":"技术","tags":["WSL","Ubuntu","Docker","AstrBot","Bangumi"],"description":"记录从 Windows/Ubuntu 双系统规划，到 WSL、Docker、AstrBot 微信接入和 Bangumi 番剧卡片调试的完整过程。","content":"$6"},{"slug":"telegram-bot-remote-control","title":"Telegram 接入 LLM 对话","date":"2026-08-09","category":"技术","tags":["Telegram","DeepSeek","aiogram","Python"],"description":"把 Telegram bot 接入 DeepSeek AI：TDD 实现、三个真 Bug、代理与开机自启，随时随地对话。","content":"$7"},{"slug":"2026-diansai-review","title":"记 26 电赛：四天三夜的车载平衡滚球","date":"2026-08-03","category":"随笔","tags":["电赛","大学生竞赛","单片机","TI"],"description":"大一新生的第一次电赛：四天三夜，从选型到调参，小车平衡滚球的极限拉扯。","content":"$8"},{"slug":"blog-writer-skill","title":"给 Claude 写了个 Blog 写作 Skill","date":"2026-05-24","category":"技术","tags":["Claude Code","Skill","Blog","自动化","skill-creator"],"description":"用 skill-creator 把博客写作流程做成可复用的 skill，基准测试 with_skill 满分 vs without_skill 87.5%。","content":"$9"},{"slug":"claude-code-zh-hook","title":"给 Claude Code 装上中文审批摘要 Hook","date":"2026-05-24","category":"技术","tags":["Claude Code","AI","Hook","Node.js","调试"],"description":"写一个中文审批摘要 Hook，从字段名写错、事件类型选错到发现 reason 字段——完整的踩坑、迭代与 debug 记录。","content":"$a"},{"slug":"css-bugfix-toc-scroll","title":"记一次 Blog 翻车：目录漂移与滚动卡死","date":"2026-05-24","category":"技术","tags":["CSS","Debug","writing-mode","scroll-behavior"],"description":"修了两个 CSS Bug：writing-mode 导致目录横向溢出，scroll-behavior: smooth 导致滚轮卡死。","content":"\n## 背景\n\n上篇 Claude Code Hook 的文章写完，点进去一看，两个 Bug。\n\n## Bug 1：目录漂移到正文里\n\n左侧目录栏压在正文上。短文章标题少看不出来，这篇十个标题直接炸了。\n\n`PostSidebar` 的 CSS：\n\n```css\n.nav {\n  display: flex;\n  flex-direction: column;\n  writing-mode: vertical-rl;\n}\n```\n\n`writing-mode: vertical-rl` 把块轴变成了水平方向，`flex-direction: column` 跟着块轴走——导航按钮横向排列，十个按钮加起来 ~200px，sidebar 只有 60px，溢出部分侵入正文。\n\n**修复：** `writing-mode` 只加在按钮上，不要加在容器上。\n\n```css\n.nav {\n  display: flex;\n  flex-direction: column;\n  /* writing-mode 删掉 */\n}\n.navItem {\n  writing-mode: vertical-rl; /* 保留 */\n}\n```\n\n## Bug 2：滚轮滚到一半卡死\n\n鼠标滚轮往下滚，页面不动，进度条也不动。点一下鼠标，内容\"唰\"地跳到应有位置。\n\n两个因素叠加：\n\n**一、`html { scroll-behavior: smooth }`** 让鼠标滚轮也走 smooth 动画。Chrome 的已知问题：滚轮产生的连续小步长动画排队积压，主线程卡死。\n\n**二、Header 的 scroll 事件没节流。** 每次事件都 `scrollHeight`（强制 layout）+ 两次 `setState`（两次 React 重渲染）。\n\n**修复：** 删掉全局 `scroll-behavior: smooth`，scroll 事件加 `requestAnimationFrame` 节流。\n\n## 总结\n\n两个 CSS 属性都是对的，靶点不对就成了 Bug。`writing-mode` 不该加容器上，`scroll-behavior: smooth` 不该全局生效，scroll 事件不该裸奔。\n"},{"slug":"ai-assisted-blog","title":"AI辅助搭建个人Blog","date":"2026-05-23","category":"技术","tags":["博客","Next.js","GitHub Pages","踩坑"],"description":"从设计到部署，记录用AI辅助搭建个人博客遇到的几个坑。","content":"\n## 从零开始\n\n参考《明日方舟：终末地》官网的暗色工业风设计，用 **Next.js 14** 搭建了一个个人随笔博客，Markdown 写文章，静态生成后部署到 GitHub Pages。\n\n## 一路踩过的坑\n\n### 1. 仓库公开才能用 GitHub Pages\n\nGitHub Pages 免费版只支持**公开仓库**，私有仓库需要付费。把仓库改为公开后就能用了。\n\n### 2. GitHub Actions 分支策略\n\n第一次部署报错：\n```\nBranch \"master\" is not allowed to deploy to github-pages\n```\n需要在仓库 Settings → Pages 里正确选择 **GitHub Actions** 作为部署源，而不是默认的 \"Deploy from a branch\"。\n\n### 3. 部署后 UI 全崩\n\n推送到 GitHub 后网站样式全没了——白色背景加一堆超链接。原因是 GitHub Pages 项目站点的路径是 `/my-blog/`，但 Next.js 默认的资源路径是 `/_next/static/...`，浏览器自然找不到 CSS/JS。\n\n修复：在 `next.config.js` 加上 `basePath: '/my-blog'`。\n\n### 4. Chrome 能打开，Edge 不行（最诡异的坑）\n\nEdge 会把地址栏输入的 `https://air56.github.io/my-blog/` 自动替换成 `http://myblog.rin/`（502 错误）。但如果从**搜索栏**进入却正常。\n\n排查后发现：之前曾在 GitHub Pages 设置过自定义域名 `myblog.rin`，虽然删除了配置，但 **Edge 已经缓存了那条 301 永久重定向**，每次输入网址都在本地直接跳转，请求根本没发出去。\n\n搜索栏能打开，是因为搜索请求经过了搜索引擎中转，形成了新的导航上下文，绕过了本地 301 缓存。\n\nChrome 没事，是因为配置 `myblog.rin` 时 Chrome 根本没访问过那个网站，压根没缓存那条 301。\n\n修复：清除 Edge 缓存即可。\n\n---\n\n从代码配置到部署流程再到浏览器缓存机制，每个坑背后都有值得了解的知识点。记录下来，希望帮到有类似遭遇的人。\n"},{"slug":"hello-world","title":"你好，世界","date":"2026-05-23","category":"随笔","tags":["生活","开端"],"description":"这是博客的第一篇文章，以此作为开端。","content":"\n## 新的开始\n\n这是这个博客的第一篇文章。\n\n从今天开始，我会在这里记录一些思考与见闻。\n\n## 为什么写博客\n\n写作是一种思考的方式。把想法写下来，能让它们变得更清晰。\n\n### 记录思考\n\n很多时候，一个想法在脑海里转瞬即逝。写下来，就能反复审视。\n\n### 分享交流\n\n如果恰好有人读到，产生一些共鸣或讨论，那就更好了。\n\n---\n\n> 路虽远，行则将至。\n\n就这样开始吧。\n"},{"slug":"new-post","title":"第一次写markdown","date":"2026-05-23","category":"随笔","tags":["开端","闲聊"],"description":"不想发朋友圈什么的，就在这个小世界记录自己","content":"\n## ai学习经历\n最近换用了cc switch代理deepseekv4接入claude code cli，深刻感觉到ai的发展之快。\n###24年末\n获好友指导得以翻墙后，先是在接触gpt，grok等移动端服务ai。\n###25年6月高考结束\n有了往ai方向学习的想法，脑子一热想搞本地部署跑ai（然而此时无知的我对学习的方向并没有一个系统的认知），\n就搞起了外接显卡，整了个16g显存的5060ti ，装了*ollama*跑*gpt-oss 20b*，后面又开始玩stable difussion学ai生图（依旧三分钟热度）\n这段期间主要其实是在给我打计算机基础，跟着教程给电脑配置*node.js*和*python*环境变量，解决一些折腾过程中遇到的软件问题，\n然后搞外接学习电脑硬件，顺便学习了电脑桌面美化，然后浑浑噩噩度过这段长假。\n###25年11月\n经过一段时间的c语言学习并通过入门测试后，我进入了实验室，开始学stm32单片机，由于单片机代码较复杂，开始由原先的问ai怎么做，到开始想办法让ai写代码了。\n适逢*Gemini3.0*出世，nano banana全网刷屏后我也理所当然了解到了谷歌的ai，然后入门了*google ai studio*，确实给了我不小的震撼。\n审美在线的ui界面和优秀的代码能力，而且还能根据需求生成图形化交互内容（写作业和学高数比较方便），当时直接成为我的新宠。\n\n\n##为什么选择终末地的美术风格\n\n\n\n\n\n**加粗文字** 和 *斜体文字*。\n\n### 三级标题\n\n- 无序列表项 1\n- 无序列表项 2\n- 无序列表项 3\n\n1. 有序列表项\n2. 有序列表项\n3. 有序列表项\n\n> 引用块内容\n\n`行内代码`\n\n```\n代码块\nfunction hello() {\n  console.log(\"Hello World\");\n}\n```\n\n[链接文字](https://example.com)\n\n![图片描述](/my-blog/images/your-image.jpg)\n\n---\n\n## 另一个章节\n\n继续写正文内容。\n"},{"slug":"second-post","title":"关于设计的一些思考","date":"2026-05-22","category":"设计","tags":["设计","美学","思考"],"description":"好的设计不仅仅是好看，更是一种沟通方式。","content":"\n## 设计与功能\n\n好的设计应该是隐形的。它不会喧宾夺主，而是让用户自然地完成任务。\n\n### 暗色模式\n\n暗色模式不只是把背景变黑。它需要精心设计层次和对比度。\n\n### 工业美学\n [明日方舟：终末地官网](https://endfield.hypergryph.com/)\n《明日方舟：终末地》的工业美学给人留下深刻印象。它的设计语言有几个特点：\n\n- **硬朗的几何线条** - 干净利落，不拖泥带水\n- **高对比度强调色** - 在暗色背景上特别醒目\n- **质感的处理** - 纹理和细节让界面更有层次\n\n```css\n/* 模拟 Endfield 风格的斜线纹理 */\n.element {\n  background-image: repeating-linear-gradient(\n    -45deg,\n    transparent,\n    transparent 2px,\n    rgba(255, 255, 255, 0.03) 2px,\n    rgba(255, 255, 255, 0.03) 4px\n  );\n}\n```\n\n## 小结\n\n设计是一门平衡的艺术。找到功能与美学的平衡点，需要持续地学习和实践。\n"}]}],[["$","link","0",{"rel":"stylesheet","href":"/my-blog/_next/static/css/f3888936cbadb3ad.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$Lb",null,{"parallelRouterKey":"children","segmentPath":["children","search","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$Lc",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/my-blog/_next/static/css/384cc2d7fff0d86d.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"zh-CN","suppressHydrationWarning":true,"children":[["$","head",null,{"children":["$","script",null,{"dangerouslySetInnerHTML":{"__html":"try{document.documentElement.dataset.theme=localStorage.getItem('rin-theme')==='light'?'light':'dark'}catch{}"}}]}],["$","body",null,{"children":["$","$Ld",null,{"children":[["$","$Le",null,{}],["$","main",null,{"style":{"minHeight":"calc(100vh - var(--header-height))","paddingTop":"var(--header-height)"},"children":["$","$Lb",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$Lc",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":["$","div",null,{"style":{"display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center","minHeight":"60vh","textAlign":"center","padding":"2rem"},"children":[["$","style",null,{"children":"\n        .not-found-btn {\n          display: inline-block;\n          padding: 0.75rem 2rem;\n          border: 1px solid var(--accent-yellow);\n          color: var(--accent-yellow);\n          font-size: 0.875rem;\n          letter-spacing: 0.05em;\n          transition: all 0.3s ease;\n        }\n        .not-found-btn:hover {\n          background: var(--accent-yellow) !important;\n          color: #000 !important;\n        }\n      "}],["$","div",null,{"style":{"fontSize":"5rem","fontWeight":700,"fontFamily":"var(--font-display)","color":"var(--accent-yellow)","lineHeight":1,"marginBottom":"1rem"},"children":"404"}],["$","div",null,{"className":"section-divider","style":{"maxWidth":"200px","margin":"0 auto 1.5rem"}}],["$","p",null,{"style":{"color":"var(--text-secondary)","marginBottom":"2rem","fontSize":"1rem"},"children":"页面未找到"}],["$","$Lf",null,{"href":"/","className":"not-found-btn","children":"返回首页"}]]}],"notFoundStyles":[]}]}],["$","footer",null,{"className":"Footer_footer__JrJN9","children":["$","div",null,{"className":"Footer_inner__QTh9n","children":[["$","span",null,{"className":"Footer_copy__fxI_X","children":["© ",2026," RINのblog. All rights reserved."]}],["$","div",null,{"className":"Footer_links__g0H7R","children":["$","a",null,{"href":"https://github.com","target":"_blank","rel":"noopener noreferrer","className":"Footer_link__ZIL7i","children":"GitHub"}]}]]}]}]]}]}]]}]],null],null],["$L10",null]]]]
-10:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"搜索 | RINのblog"}],["$","meta","3",{"name":"description","content":"搜索文章"}],["$","link","4",{"rel":"icon","href":"/my-blog/favicon.ico"}],["$","link","5",{"rel":"apple-touch-icon","href":"/my-blog/apple-touch-icon.png"}]]
+0:["dIV620CM2QsjCkC8Ooxdn",[[["",{"children":["search",{"children":["__PAGE__",{}]}]},"$undefined","$undefined",true],["",{"children":["search",{"children":["__PAGE__",{},[["$L1",["$","$L2",null,{"posts":[{"slug":"codex-cc-switch-clash-network-troubleshooting","title":"Codex 网络异常排查：从前置超时到 CC Switch 502","date":"2026-10-08","category":"学习","tags":["Codex","CC Switch","Clash","DNS","网络排查"],"description":"先用 doctor、端口和 TCP 状态定位故障，再区分 ChatGPT 前置网络超时与 CC Switch 上游 502，附 PowerShell 命令及 DNS/TUN 配置。","content":"$3"},{"slug":"netease-lyrics-swidget-development-review","title":"从歌词条到桌面组件：网易云双语歌词小组件的开发复盘","date":"2026-09-14","category":"技术","tags":["Sapphire","网易云音乐","Windows","前端组件","开发复盘"],"description":"记录网易云双语歌词 Sapphire 小组件从视觉设计、播放同步到 Bridge 自启动和兼容性修复的完整开发过程。","content":"$4"},{"slug":"astrbot-docker-wsl","title":"AstrBot Docker + WSL 使用备忘录","date":"2026-08-28","category":"学习","tags":["AstrBot","Docker","WSL","备忘录"],"description":"记录 Windows + WSL2 + Docker Desktop 部署 AstrBot 后的启动、管理、常用指令和故障排查流程。","content":"$5"},{"slug":"computer-network-basics","title":"计算机网络入门","date":"2026-08-28","category":"学习","tags":["计算机网络","网络基础","IP","DNS","路由器"],"description":"从 IP、网关、端口开始，用生活中的地址、道路和房间理解计算机网络。","content":"$6"},{"slug":"wsl-astrbot-bangumi","title":"从双系统到 AstrBot：WSL、Docker 与 Bangumi 番剧机器人的完整排坑记录","date":"2026-08-28","category":"技术","tags":["WSL","Ubuntu","Docker","AstrBot","Bangumi"],"description":"记录从 Windows/Ubuntu 双系统规划，到 WSL、Docker、AstrBot 微信接入和 Bangumi 番剧卡片调试的完整过程。","content":"$7"},{"slug":"telegram-bot-remote-control","title":"Telegram 接入 LLM 对话","date":"2026-08-09","category":"技术","tags":["Telegram","DeepSeek","aiogram","Python"],"description":"把 Telegram bot 接入 DeepSeek AI：TDD 实现、三个真 Bug、代理与开机自启，随时随地对话。","content":"$8"},{"slug":"2026-diansai-review","title":"记 26 电赛：四天三夜的车载平衡滚球","date":"2026-08-03","category":"随笔","tags":["电赛","大学生竞赛","单片机","TI"],"description":"大一新生的第一次电赛：四天三夜，从选型到调参，小车平衡滚球的极限拉扯。","content":"$9"},{"slug":"blog-writer-skill","title":"给 Claude 写了个 Blog 写作 Skill","date":"2026-05-24","category":"技术","tags":["Claude Code","Skill","Blog","自动化","skill-creator"],"description":"用 skill-creator 把博客写作流程做成可复用的 skill，基准测试 with_skill 满分 vs without_skill 87.5%。","content":"$a"},{"slug":"claude-code-zh-hook","title":"给 Claude Code 装上中文审批摘要 Hook","date":"2026-05-24","category":"技术","tags":["Claude Code","AI","Hook","Node.js","调试"],"description":"写一个中文审批摘要 Hook，从字段名写错、事件类型选错到发现 reason 字段——完整的踩坑、迭代与 debug 记录。","content":"$b"},{"slug":"css-bugfix-toc-scroll","title":"记一次 Blog 翻车：目录漂移与滚动卡死","date":"2026-05-24","category":"技术","tags":["CSS","Debug","writing-mode","scroll-behavior"],"description":"修了两个 CSS Bug：writing-mode 导致目录横向溢出，scroll-behavior: smooth 导致滚轮卡死。","content":"\n## 背景\n\n上篇 Claude Code Hook 的文章写完，点进去一看，两个 Bug。\n\n## Bug 1：目录漂移到正文里\n\n左侧目录栏压在正文上。短文章标题少看不出来，这篇十个标题直接炸了。\n\n`PostSidebar` 的 CSS：\n\n```css\n.nav {\n  display: flex;\n  flex-direction: column;\n  writing-mode: vertical-rl;\n}\n```\n\n`writing-mode: vertical-rl` 把块轴变成了水平方向，`flex-direction: column` 跟着块轴走——导航按钮横向排列，十个按钮加起来 ~200px，sidebar 只有 60px，溢出部分侵入正文。\n\n**修复：** `writing-mode` 只加在按钮上，不要加在容器上。\n\n```css\n.nav {\n  display: flex;\n  flex-direction: column;\n  /* writing-mode 删掉 */\n}\n.navItem {\n  writing-mode: vertical-rl; /* 保留 */\n}\n```\n\n## Bug 2：滚轮滚到一半卡死\n\n鼠标滚轮往下滚，页面不动，进度条也不动。点一下鼠标，内容\"唰\"地跳到应有位置。\n\n两个因素叠加：\n\n**一、`html { scroll-behavior: smooth }`** 让鼠标滚轮也走 smooth 动画。Chrome 的已知问题：滚轮产生的连续小步长动画排队积压，主线程卡死。\n\n**二、Header 的 scroll 事件没节流。** 每次事件都 `scrollHeight`（强制 layout）+ 两次 `setState`（两次 React 重渲染）。\n\n**修复：** 删掉全局 `scroll-behavior: smooth`，scroll 事件加 `requestAnimationFrame` 节流。\n\n## 总结\n\n两个 CSS 属性都是对的，靶点不对就成了 Bug。`writing-mode` 不该加容器上，`scroll-behavior: smooth` 不该全局生效，scroll 事件不该裸奔。\n"},{"slug":"ai-assisted-blog","title":"AI辅助搭建个人Blog","date":"2026-05-23","category":"技术","tags":["博客","Next.js","GitHub Pages","踩坑"],"description":"从设计到部署，记录用AI辅助搭建个人博客遇到的几个坑。","content":"\n## 从零开始\n\n参考《明日方舟：终末地》官网的暗色工业风设计，用 **Next.js 14** 搭建了一个个人随笔博客，Markdown 写文章，静态生成后部署到 GitHub Pages。\n\n## 一路踩过的坑\n\n### 1. 仓库公开才能用 GitHub Pages\n\nGitHub Pages 免费版只支持**公开仓库**，私有仓库需要付费。把仓库改为公开后就能用了。\n\n### 2. GitHub Actions 分支策略\n\n第一次部署报错：\n```\nBranch \"master\" is not allowed to deploy to github-pages\n```\n需要在仓库 Settings → Pages 里正确选择 **GitHub Actions** 作为部署源，而不是默认的 \"Deploy from a branch\"。\n\n### 3. 部署后 UI 全崩\n\n推送到 GitHub 后网站样式全没了——白色背景加一堆超链接。原因是 GitHub Pages 项目站点的路径是 `/my-blog/`，但 Next.js 默认的资源路径是 `/_next/static/...`，浏览器自然找不到 CSS/JS。\n\n修复：在 `next.config.js` 加上 `basePath: '/my-blog'`。\n\n### 4. Chrome 能打开，Edge 不行（最诡异的坑）\n\nEdge 会把地址栏输入的 `https://air56.github.io/my-blog/` 自动替换成 `http://myblog.rin/`（502 错误）。但如果从**搜索栏**进入却正常。\n\n排查后发现：之前曾在 GitHub Pages 设置过自定义域名 `myblog.rin`，虽然删除了配置，但 **Edge 已经缓存了那条 301 永久重定向**，每次输入网址都在本地直接跳转，请求根本没发出去。\n\n搜索栏能打开，是因为搜索请求经过了搜索引擎中转，形成了新的导航上下文，绕过了本地 301 缓存。\n\nChrome 没事，是因为配置 `myblog.rin` 时 Chrome 根本没访问过那个网站，压根没缓存那条 301。\n\n修复：清除 Edge 缓存即可。\n\n---\n\n从代码配置到部署流程再到浏览器缓存机制，每个坑背后都有值得了解的知识点。记录下来，希望帮到有类似遭遇的人。\n"},{"slug":"hello-world","title":"你好，世界","date":"2026-05-23","category":"随笔","tags":["生活","开端"],"description":"这是博客的第一篇文章，以此作为开端。","content":"\n## 新的开始\n\n这是这个博客的第一篇文章。\n\n从今天开始，我会在这里记录一些思考与见闻。\n\n## 为什么写博客\n\n写作是一种思考的方式。把想法写下来，能让它们变得更清晰。\n\n### 记录思考\n\n很多时候，一个想法在脑海里转瞬即逝。写下来，就能反复审视。\n\n### 分享交流\n\n如果恰好有人读到，产生一些共鸣或讨论，那就更好了。\n\n---\n\n> 路虽远，行则将至。\n\n就这样开始吧。\n"},{"slug":"new-post","title":"第一次写markdown","date":"2026-05-23","category":"随笔","tags":["开端","闲聊"],"description":"不想发朋友圈什么的，就在这个小世界记录自己","content":"\n## ai学习经历\n最近换用了cc switch代理deepseekv4接入claude code cli，深刻感觉到ai的发展之快。\n###24年末\n获好友指导得以翻墙后，先是在接触gpt，grok等移动端服务ai。\n###25年6月高考结束\n有了往ai方向学习的想法，脑子一热想搞本地部署跑ai（然而此时无知的我对学习的方向并没有一个系统的认知），\n就搞起了外接显卡，整了个16g显存的5060ti ，装了*ollama*跑*gpt-oss 20b*，后面又开始玩stable difussion学ai生图（依旧三分钟热度）\n这段期间主要其实是在给我打计算机基础，跟着教程给电脑配置*node.js*和*python*环境变量，解决一些折腾过程中遇到的软件问题，\n然后搞外接学习电脑硬件，顺便学习了电脑桌面美化，然后浑浑噩噩度过这段长假。\n###25年11月\n经过一段时间的c语言学习并通过入门测试后，我进入了实验室，开始学stm32单片机，由于单片机代码较复杂，开始由原先的问ai怎么做，到开始想办法让ai写代码了。\n适逢*Gemini3.0*出世，nano banana全网刷屏后我也理所当然了解到了谷歌的ai，然后入门了*google ai studio*，确实给了我不小的震撼。\n审美在线的ui界面和优秀的代码能力，而且还能根据需求生成图形化交互内容（写作业和学高数比较方便），当时直接成为我的新宠。\n\n\n##为什么选择终末地的美术风格\n\n\n\n\n\n**加粗文字** 和 *斜体文字*。\n\n### 三级标题\n\n- 无序列表项 1\n- 无序列表项 2\n- 无序列表项 3\n\n1. 有序列表项\n2. 有序列表项\n3. 有序列表项\n\n> 引用块内容\n\n`行内代码`\n\n```\n代码块\nfunction hello() {\n  console.log(\"Hello World\");\n}\n```\n\n[链接文字](https://example.com)\n\n![图片描述](/my-blog/images/your-image.jpg)\n\n---\n\n## 另一个章节\n\n继续写正文内容。\n"},{"slug":"second-post","title":"关于设计的一些思考","date":"2026-05-22","category":"设计","tags":["设计","美学","思考"],"description":"好的设计不仅仅是好看，更是一种沟通方式。","content":"\n## 设计与功能\n\n好的设计应该是隐形的。它不会喧宾夺主，而是让用户自然地完成任务。\n\n### 暗色模式\n\n暗色模式不只是把背景变黑。它需要精心设计层次和对比度。\n\n### 工业美学\n [明日方舟：终末地官网](https://endfield.hypergryph.com/)\n《明日方舟：终末地》的工业美学给人留下深刻印象。它的设计语言有几个特点：\n\n- **硬朗的几何线条** - 干净利落，不拖泥带水\n- **高对比度强调色** - 在暗色背景上特别醒目\n- **质感的处理** - 纹理和细节让界面更有层次\n\n```css\n/* 模拟 Endfield 风格的斜线纹理 */\n.element {\n  background-image: repeating-linear-gradient(\n    -45deg,\n    transparent,\n    transparent 2px,\n    rgba(255, 255, 255, 0.03) 2px,\n    rgba(255, 255, 255, 0.03) 4px\n  );\n}\n```\n\n## 小结\n\n设计是一门平衡的艺术。找到功能与美学的平衡点，需要持续地学习和实践。\n"}]}],[["$","link","0",{"rel":"stylesheet","href":"/my-blog/_next/static/css/f3888936cbadb3ad.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$Lc",null,{"parallelRouterKey":"children","segmentPath":["children","search","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$Ld",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/my-blog/_next/static/css/384cc2d7fff0d86d.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"zh-CN","suppressHydrationWarning":true,"children":[["$","head",null,{"children":["$","script",null,{"dangerouslySetInnerHTML":{"__html":"try{document.documentElement.dataset.theme=localStorage.getItem('rin-theme')==='light'?'light':'dark'}catch{}"}}]}],["$","body",null,{"children":["$","$Le",null,{"children":[["$","$Lf",null,{}],["$","main",null,{"style":{"minHeight":"calc(100vh - var(--header-height))","paddingTop":"var(--header-height)"},"children":["$","$Lc",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$Ld",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":["$","div",null,{"style":{"display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center","minHeight":"60vh","textAlign":"center","padding":"2rem"},"children":[["$","style",null,{"children":"\n        .not-found-btn {\n          display: inline-block;\n          padding: 0.75rem 2rem;\n          border: 1px solid var(--accent-yellow);\n          color: var(--accent-yellow);\n          font-size: 0.875rem;\n          letter-spacing: 0.05em;\n          transition: all 0.3s ease;\n        }\n        .not-found-btn:hover {\n          background: var(--accent-yellow) !important;\n          color: #000 !important;\n        }\n      "}],["$","div",null,{"style":{"fontSize":"5rem","fontWeight":700,"fontFamily":"var(--font-display)","color":"var(--accent-yellow)","lineHeight":1,"marginBottom":"1rem"},"children":"404"}],["$","div",null,{"className":"section-divider","style":{"maxWidth":"200px","margin":"0 auto 1.5rem"}}],["$","p",null,{"style":{"color":"var(--text-secondary)","marginBottom":"2rem","fontSize":"1rem"},"children":"页面未找到"}],["$","$L10",null,{"href":"/","className":"not-found-btn","children":"返回首页"}]]}],"notFoundStyles":[]}]}],["$","footer",null,{"className":"Footer_footer__JrJN9","children":["$","div",null,{"className":"Footer_inner__QTh9n","children":[["$","span",null,{"className":"Footer_copy__fxI_X","children":["© ",2026," RINのblog. All rights reserved."]}],["$","div",null,{"className":"Footer_links__g0H7R","children":["$","a",null,{"href":"https://github.com","target":"_blank","rel":"noopener noreferrer","className":"Footer_link__ZIL7i","children":"GitHub"}]}]]}]}]]}]}]]}]],null],null],["$L11",null]]]]
+11:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"搜索 | RINのblog"}],["$","meta","3",{"name":"description","content":"搜索文章"}],["$","link","4",{"rel":"icon","href":"/my-blog/favicon.ico"}],["$","link","5",{"rel":"apple-touch-icon","href":"/my-blog/apple-touch-icon.png"}]]
 1:null
